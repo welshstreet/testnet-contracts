@@ -1,7 +1,7 @@
 [project]
 name = 'welsh-street'
 description = ''
-authors = ['enjoywithouthey']
+authors = []
 telemetry = false
 cache_dir = './.cache'
 
