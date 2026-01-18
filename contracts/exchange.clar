@@ -40,7 +40,6 @@
 (define-data-var treasury-address principal (var-get contract-owner))
 (define-data-var treasury-locked bool false)
 
-
 ;; exchange functions 
 (define-public (burn-liquidity (amount uint))
   (begin
@@ -108,7 +107,8 @@
     (ok {
       amount-a: amount-a,
       amount-b: amount-b,
-      amount-lp: amount-lp})
+      amount-lp: amount-lp
+      })
     )
   )
 )
@@ -137,16 +137,17 @@
     (asserts! (if (and (is-eq avail-a u0) (is-eq res-a u0))
         (is-eq tx-sender (var-get contract-owner))
         true) ERR_NOT_INITIALIZED)
-      (try! (contract-call? WELSH_CONTRACT transfer amount-a tx-sender .exchange none))
-      (try! (contract-call? .street transfer amount-b tx-sender .exchange none))
-      (try! (contract-call? .credit mint amount-lp))
-      (try! (contract-call? .rewards update-provide-rewards tx-sender amount-lp))
-      (var-set reserve-a (+ res-a amount-a))
-      (var-set reserve-b (+ res-b amount-b))
+    (try! (contract-call? WELSH_CONTRACT transfer amount-a tx-sender .exchange none))
+    (try! (contract-call? .street transfer amount-b tx-sender .exchange none))
+    (try! (contract-call? .credit mint amount-lp))
+    (try! (contract-call? .rewards update-provide-rewards tx-sender amount-lp))
+    (var-set reserve-a (+ res-a amount-a))
+    (var-set reserve-b (+ res-b amount-b))
     (ok {
       amount-a: amount-a,
       amount-b: amount-b,
-      amount-lp: amount-lp})
+      amount-lp: amount-lp
+      })
     )
   )
 )
@@ -229,7 +230,8 @@
         res-a-new: res-a-new,
         res-b: res-b,
         res-b-new: res-b-new,
-        rev-a: rev-a })
+        rev-a: rev-a
+      })
     )
   )
 )
@@ -274,7 +276,8 @@
         res-a-new: res-a-new,
         res-b: res-b,
         res-b-new: res-b-new,
-        rev-b: rev-b})
+        rev-b: rev-b
+      })
     )
   )
 )
@@ -357,7 +360,8 @@
   (ok {
     bitcoin-block: burn-block-height,
     stacks-block: stacks-block-height
-  }))
+  })
+)
 
 (define-read-only (get-contract-owner)
   (ok (var-get contract-owner)))
