@@ -3,11 +3,11 @@
 (use-trait sip-010 'SP3FBR2AGK5H9QBDH3EEN6DF8EK8JY7RX8QJ5SVTE.sip-010-trait-ft-standard.sip-010-trait)
 
 ;; errors
-(define-constant ERR_ZERO_AMOUNT (err u800))
-(define-constant ERR_NOT_CONTRACT_OWNER (err u801))
-(define-constant ERR_EMISSION_INTERVAL (err u802))
-(define-constant ERR_NOT_AUTHORIZED (err u803))
-(define-constant ERR_INVALID_PRINCIPAL (err u804))
+(define-constant ERR_ZERO_AMOUNT (err u900))
+(define-constant ERR_NOT_CONTRACT_OWNER (err u901))
+(define-constant ERR_EMISSION_INTERVAL (err u902))
+(define-constant ERR_NOT_AUTHORIZED (err u903))
+(define-constant ERR_INVALID_PRINCIPAL (err u904))
 
 ;; constants
 (define-constant PRECISION u1000000000)

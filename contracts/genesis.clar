@@ -3,9 +3,9 @@
 (use-trait sip-010 'SP3FBR2AGK5H9QBDH3EEN6DF8EK8JY7RX8QJ5SVTE.sip-010-trait-ft-standard.sip-010-trait)
 
 ;; errors
-(define-constant ERR_ZERO_AMOUNT (err u500))
-(define-constant ERR_NOT_CONTRACT_OWNER (err u501))
-(define-constant ERR_NOT_ACTIVE_FUND (err u502))
+(define-constant ERR_ZERO_AMOUNT (err u900))
+(define-constant ERR_NOT_CONTRACT_OWNER (err u901))
+(define-constant ERR_NOT_ACTIVE_FUND (err u902))
 
 ;; constants
 (define-constant CONTRACT_OWNER tx-sender)

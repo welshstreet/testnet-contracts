@@ -5,11 +5,11 @@
 (define-fungible-token credit)
 
 ;; errors
-(define-constant ERR_ZERO_AMOUNT (err u600))
-(define-constant ERR_NOT_CONTRACT_OWNER (err u601))
-(define-constant ERR_NOT_TOKEN_OWNER (err u602))
-(define-constant ERR_NOT_AUTHORIZED (err u603))
-(define-constant ERR_INVALID_PRINCIPAL (err u604))
+(define-constant ERR_ZERO_AMOUNT (err u900))
+(define-constant ERR_NOT_CONTRACT_OWNER (err u901))
+(define-constant ERR_NOT_TOKEN_OWNER (err u902))
+(define-constant ERR_NOT_AUTHORIZED (err u903))
+(define-constant ERR_INVALID_PRINCIPAL (err u904))
 
 ;; constants
 (define-constant TOKEN_DECIMALS u6)
@@ -18,7 +18,7 @@
 
 ;; variables
 (define-data-var contract-owner principal tx-sender)
-(define-data-var token-uri (optional (string-utf8 256)) (some u"https://gateway.lighthouse.storage/ipfs/bafkreia3r5yfzb3r4ixfzw35s76ktvjuf6v4zhug76ck2bgd5ypyx2faea"))
+(define-data-var token-uri (optional (string-utf8 256)) (some u"https://gateway.lighthouse.storage/ipfs/bafkreiglyrjoywkfb3bh4pr7wewn2nohofwx7wq5p5xyszfosgnsgkhfz4"))
 
 (define-public (burn (amount uint))
     (begin

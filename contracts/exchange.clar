@@ -3,15 +3,15 @@
 (use-trait sip-010 'SP3FBR2AGK5H9QBDH3EEN6DF8EK8JY7RX8QJ5SVTE.sip-010-trait-ft-standard.sip-010-trait)
 
 ;; errors
-(define-constant ERR_ZERO_AMOUNT (err u700))
-(define-constant ERR_NOT_CONTRACT_OWNER (err u701))
-(define-constant ERR_NOT_INITIALIZED (err u702))
-(define-constant ERR_ALREADY_INITIALIZED (err u703))
-(define-constant ERR_NOT_TREASURY (err u704))
-(define-constant ERR_LOCKED_TREASURY (err u705))
-(define-constant ERR_INVALID_PRINCIPAL (err u706))
-(define-constant ERR_INSUFFICIENT_AVAILABLE_LIQUIDITY (err u707))
-(define-constant ERR_INVALID_AMOUNT (err u787))
+(define-constant ERR_ZERO_AMOUNT (err u900))
+(define-constant ERR_NOT_CONTRACT_OWNER (err u901))
+(define-constant ERR_NOT_INITIALIZED (err u902))
+(define-constant ERR_ALREADY_INITIALIZED (err u903))
+(define-constant ERR_NOT_TREASURY (err u904))
+(define-constant ERR_LOCKED_TREASURY (err u905))
+(define-constant ERR_INVALID_PRINCIPAL (err u906))
+(define-constant ERR_INSUFFICIENT_AVAILABLE_LIQUIDITY (err u907))
+(define-constant ERR_INVALID_AMOUNT (err u908))
 
 ;; constants
 (define-constant BASIS u10000)

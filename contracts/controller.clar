@@ -1,11 +1,11 @@
 ;; Welsh Street Controller
 
 ;; errors
-(define-constant ERR_ZERO_AMOUNT (err u500))
-(define-constant ERR_NOT_CONTRACT_OWNER (err u501))
-(define-constant ERR_NOT_TOKEN_OWNER (err u502))
-(define-constant ERR_INSUFFICIENT_BALANCE (err u503))
-(define-constant ERR_INVALID_PRINCIPAL (err u504))
+(define-constant ERR_ZERO_AMOUNT (err u900))
+(define-constant ERR_NOT_CONTRACT_OWNER (err u901))
+(define-constant ERR_NOT_TOKEN_OWNER (err u902))
+(define-constant ERR_INSUFFICIENT_BALANCE (err u903))
+(define-constant ERR_INVALID_PRINCIPAL (err u904))
 
 ;; variables
 (define-data-var contract-owner principal tx-sender)
