@@ -2,9 +2,6 @@
 
 (use-trait sip-010 'SP3FBR2AGK5H9QBDH3EEN6DF8EK8JY7RX8QJ5SVTE.sip-010-trait-ft-standard.sip-010-trait)
 
-;; welshcorgicoin
-(define-constant WELSH_CONTRACT 'ST3HV3C3H5CDKB06J8PCXJJKGJ83VKF16BDWXSW3J.welshcorgicoin)
-
 ;; errors
 (define-constant ERR_ZERO_AMOUNT (err u800))
 (define-constant ERR_NOT_CONTRACT_OWNER (err u801))
@@ -63,7 +60,7 @@
   )
     (begin
       (if (> unclaimed-a u0)
-        (try! (transformer WELSH_CONTRACT unclaimed-a tx-sender))
+        (try! (transformer .welshcorgicoin unclaimed-a tx-sender))
         true
       )
       (if (> unclaimed-b u0)
@@ -90,7 +87,7 @@
 
 (define-public (cleanup-rewards)
   (let (
-    (actual-a (unwrap-panic (contract-call? WELSH_CONTRACT get-balance .rewards)))
+    (actual-a (unwrap-panic (contract-call? .welshcorgicoin get-balance .rewards)))
     (actual-b (unwrap-panic (contract-call? .street get-balance .rewards)))
     (claimed-a (var-get total-claimed-a))
     (claimed-b (var-get total-claimed-b))
@@ -132,7 +129,7 @@
     (begin
       (if (> amount-a u0)
       (begin
-        (try! (contract-call? WELSH_CONTRACT transfer amount-a tx-sender .rewards none))
+        (try! (contract-call? .welshcorgicoin transfer amount-a tx-sender .rewards none))
         (try! (as-contract (update-rewards-a amount-a)))
       )
         true
@@ -563,7 +560,7 @@
 ;; custom read only
 (define-read-only (get-cleanup-rewards)
   (let (
-    (actual-a (unwrap-panic (contract-call? 'ST3HV3C3H5CDKB06J8PCXJJKGJ83VKF16BDWXSW3J.welshcorgicoin get-balance .rewards)))
+    (actual-a (unwrap-panic (contract-call? .welshcorgicoin get-balance .rewards)))
     (actual-b (unwrap-panic (contract-call? .street get-balance .rewards)))
     (claimed-a (var-get total-claimed-a))
     (claimed-b (var-get total-claimed-b))
@@ -607,7 +604,7 @@
     (ok {
       global-index-a: (var-get global-index-a),
       global-index-b: (var-get global-index-b),
-      rewards-a: (unwrap-panic (contract-call? 'ST3HV3C3H5CDKB06J8PCXJJKGJ83VKF16BDWXSW3J.welshcorgicoin get-balance .rewards)),
+      rewards-a: (unwrap-panic (contract-call? .welshcorgicoin get-balance .rewards)),
       rewards-b: (unwrap-panic (contract-call? .street get-balance .rewards)),
     })
 )
