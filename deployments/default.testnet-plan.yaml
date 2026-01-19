@@ -22,56 +22,56 @@ plan:
         - contract-publish:
             contract-name: credit
             expected-sender: ST3J9SS0Y8R6M220C75KPBXGYQESC1CYXTV9N4BJK
-            cost: 5724862
+            cost: 27190
             path: contracts/credit.clar
             anchor-block-only: true
             clarity-version: 3
         - contract-publish:
             contract-name: street
             expected-sender: ST3J9SS0Y8R6M220C75KPBXGYQESC1CYXTV9N4BJK
-            cost: 5734149
+            cost: 47250
             path: contracts/street.clar
             anchor-block-only: true
             clarity-version: 3
         - contract-publish:
             contract-name: welshcorgicoin
             expected-sender: ST3J9SS0Y8R6M220C75KPBXGYQESC1CYXTV9N4BJK
-            cost: 5721767
+            cost: 21940
             path: contracts/welshcorgicoin.clar
             anchor-block-only: true
             clarity-version: 3
         - contract-publish:
             contract-name: rewards
             expected-sender: ST3J9SS0Y8R6M220C75KPBXGYQESC1CYXTV9N4BJK
-            cost: 5821859
+            cost: 226020
             path: contracts/rewards.clar
             anchor-block-only: true
             clarity-version: 3
         - contract-publish:
             contract-name: controller
             expected-sender: ST3J9SS0Y8R6M220C75KPBXGYQESC1CYXTV9N4BJK
-            cost: 5718671
+            cost: 15710
             path: contracts/controller.clar
             anchor-block-only: true
             clarity-version: 3
         - contract-publish:
             contract-name: exchange
             expected-sender: ST3J9SS0Y8R6M220C75KPBXGYQESC1CYXTV9N4BJK
-            cost: 5774393
+            cost: 128460
             path: contracts/exchange.clar
             anchor-block-only: true
             clarity-version: 3
         - contract-publish:
             contract-name: faucet
             expected-sender: ST3J9SS0Y8R6M220C75KPBXGYQESC1CYXTV9N4BJK
-            cost: 5728990
+            cost: 35740
             path: contracts/faucet.clar
             anchor-block-only: true
             clarity-version: 3
         - contract-publish:
             contract-name: genesis
             expected-sender: ST3J9SS0Y8R6M220C75KPBXGYQESC1CYXTV9N4BJK
-            cost: 5732086
+            cost: 41990
             path: contracts/genesis.clar
             anchor-block-only: true
             clarity-version: 3
