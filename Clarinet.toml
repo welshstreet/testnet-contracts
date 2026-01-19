@@ -23,6 +23,11 @@ path = 'contracts/exchange.clar'
 clarity_version = 3
 epoch = 'latest'
 
+[contracts.faucet]
+path = 'contracts/faucet.clar'
+clarity_version = 3
+epoch = 'latest'
+
 [contracts.genesis]
 path = 'contracts/genesis.clar'
 clarity_version = 3
