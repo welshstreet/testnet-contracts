@@ -58,14 +58,6 @@
   )
 )
 
-(define-public (transformer
-    (token <sip-010>)
-    (amount uint)
-    (recipient principal)
-  )
-  (as-contract (contract-call? token transfer amount tx-sender recipient none))
-)
-
 (define-public (withdraw (amount uint) (recipient principal))
   (begin
     (asserts! (> amount u0) ERR_ZERO_AMOUNT)
@@ -73,6 +65,14 @@
     (try! (transformer .welshcorgicoin amount recipient))
     (ok { amount: amount })
   )
+)
+
+(define-private (transformer
+    (token <sip-010>)
+    (amount uint)
+    (recipient principal)
+  )
+  (as-contract (contract-call? token transfer amount tx-sender recipient none))
 )
 
 ;; custom read-only
