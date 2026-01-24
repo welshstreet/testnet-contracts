@@ -35,7 +35,6 @@
   }
 )
 
-;; reward functions
 (define-public (claim-rewards)
   (let (
     (balance (unwrap-panic (contract-call? .credit get-balance tx-sender)))
