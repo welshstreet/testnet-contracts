@@ -10,11 +10,11 @@
 (define-constant ERR_COOLDOWN (err u904))
 
 ;; constants
-(define-constant AMOUNT u10000000000000) ;; 10,000,000 welsh tokens (6 decimals)
+(define-constant AMOUNT u10000000000000)
 
 ;; variables
 (define-data-var contract-owner principal tx-sender)
-(define-data-var cooldown uint u420)
+(define-data-var cooldown uint u100)
 
 (define-map last-request
   { user: principal }

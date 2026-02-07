@@ -7,7 +7,7 @@
 (define-constant ERR_NOT_CONTRACT_OWNER (err u901))
 (define-constant ERR_NOT_ACTIVE_FUND (err u902))
 
-;; constants
+;; metadata
 (define-constant CONTRACT_OWNER tx-sender)
 (define-constant TOTAL_STREET u1000000000000000)
 
@@ -36,7 +36,7 @@
     (begin
         (asserts! (is-eq (var-get claim-active) true) ERR_NOT_ACTIVE_FUND)
         (asserts! (> user-balance u0) ERR_ZERO_AMOUNT)
-        (try! (transformer .street user-claim tx-sender))
+        (try! (transformer .street-token user-claim tx-sender))
         (map-set balances { address: tx-sender } {
             balance: u0,
             claimed: user-claim
@@ -73,6 +73,7 @@
     )
     )
 )
+
 
 (define-public (withdrawal)
     (let (

@@ -2,24 +2,19 @@
 name = 'welsh-street'
 description = ''
 authors = []
-telemetry = false
+telemetry = true
 cache_dir = './.cache'
 
 [[project.requirements]]
 contract_id = 'SP3FBR2AGK5H9QBDH3EEN6DF8EK8JY7RX8QJ5SVTE.sip-010-trait-ft-standard'
 
-[contracts.controller]
-path = 'contracts/controller.clar'
+[contracts.credit-controller]
+path = 'contracts/credit-controller.clar'
 clarity_version = 3
 epoch = 'latest'
 
-[contracts.credit]
-path = 'contracts/credit.clar'
-clarity_version = 3
-epoch = 'latest'
-
-[contracts.exchange]
-path = 'contracts/exchange.clar'
+[contracts.credit-token]
+path = 'contracts/credit-token.clar'
 clarity_version = 3
 epoch = 'latest'
 
@@ -33,13 +28,18 @@ path = 'contracts/genesis.clar'
 clarity_version = 3
 epoch = 'latest'
 
-[contracts.rewards]
-path = 'contracts/rewards.clar'
+[contracts.street-market]
+path = 'contracts/street-market.clar'
 clarity_version = 3
 epoch = 'latest'
 
-[contracts.street]
-path = 'contracts/street.clar'
+[contracts.street-rewards]
+path = 'contracts/street-rewards.clar'
+clarity_version = 3
+epoch = 'latest'
+
+[contracts.street-token]
+path = 'contracts/street-token.clar'
 clarity_version = 3
 epoch = 'latest'
 
@@ -60,5 +60,5 @@ trusted_caller = false
 callee_filter = false
 
 [repl.remote_data]
-enabled = true
+enabled = false
 api_url = 'https://api.testnet.hiro.so'

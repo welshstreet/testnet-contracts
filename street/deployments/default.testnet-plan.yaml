@@ -10,9 +10,9 @@ plan:
       transactions:
         - requirement-publish:
             contract-id: SP3FBR2AGK5H9QBDH3EEN6DF8EK8JY7RX8QJ5SVTE.sip-010-trait-ft-standard
-            remap-sender: ST3J9SS0Y8R6M220C75KPBXGYQESC1CYXTV9N4BJK
+            remap-sender: ST39TJ8FFJVZ4211VZYQ9MBGP0V62PQXFNBDHBZE
             remap-principals:
-              SP3FBR2AGK5H9QBDH3EEN6DF8EK8JY7RX8QJ5SVTE: ST3J9SS0Y8R6M220C75KPBXGYQESC1CYXTV9N4BJK
+              SP3FBR2AGK5H9QBDH3EEN6DF8EK8JY7RX8QJ5SVTE: ST39TJ8FFJVZ4211VZYQ9MBGP0V62PQXFNBDHBZE
             cost: 8400
             path: "./.cache/requirements/SP3FBR2AGK5H9QBDH3EEN6DF8EK8JY7RX8QJ5SVTE.sip-010-trait-ft-standard.clar"
             clarity-version: 1
@@ -20,59 +20,59 @@ plan:
     - id: 1
       transactions:
         - contract-publish:
-            contract-name: credit
-            expected-sender: ST3J9SS0Y8R6M220C75KPBXGYQESC1CYXTV9N4BJK
-            cost: 27190
-            path: contracts/credit.clar
+            contract-name: credit-token
+            expected-sender: ST39TJ8FFJVZ4211VZYQ9MBGP0V62PQXFNBDHBZE
+            cost: 25760
+            path: contracts/credit-token.clar
             anchor-block-only: true
             clarity-version: 3
         - contract-publish:
-            contract-name: street
-            expected-sender: ST3J9SS0Y8R6M220C75KPBXGYQESC1CYXTV9N4BJK
-            cost: 47250
-            path: contracts/street.clar
+            contract-name: street-token
+            expected-sender: ST39TJ8FFJVZ4211VZYQ9MBGP0V62PQXFNBDHBZE
+            cost: 62390
+            path: contracts/street-token.clar
             anchor-block-only: true
             clarity-version: 3
         - contract-publish:
             contract-name: welshcorgicoin
-            expected-sender: ST3J9SS0Y8R6M220C75KPBXGYQESC1CYXTV9N4BJK
-            cost: 21940
+            expected-sender: ST39TJ8FFJVZ4211VZYQ9MBGP0V62PQXFNBDHBZE
+            cost: 22910
             path: contracts/welshcorgicoin.clar
             anchor-block-only: true
             clarity-version: 3
         - contract-publish:
-            contract-name: rewards
-            expected-sender: ST3J9SS0Y8R6M220C75KPBXGYQESC1CYXTV9N4BJK
-            cost: 226020
-            path: contracts/rewards.clar
+            contract-name: street-rewards
+            expected-sender: ST39TJ8FFJVZ4211VZYQ9MBGP0V62PQXFNBDHBZE
+            cost: 153960
+            path: contracts/street-rewards.clar
             anchor-block-only: true
             clarity-version: 3
         - contract-publish:
-            contract-name: controller
-            expected-sender: ST3J9SS0Y8R6M220C75KPBXGYQESC1CYXTV9N4BJK
-            cost: 15710
-            path: contracts/controller.clar
-            anchor-block-only: true
-            clarity-version: 3
-        - contract-publish:
-            contract-name: exchange
-            expected-sender: ST3J9SS0Y8R6M220C75KPBXGYQESC1CYXTV9N4BJK
-            cost: 128460
-            path: contracts/exchange.clar
+            contract-name: credit-controller
+            expected-sender: ST39TJ8FFJVZ4211VZYQ9MBGP0V62PQXFNBDHBZE
+            cost: 15230
+            path: contracts/credit-controller.clar
             anchor-block-only: true
             clarity-version: 3
         - contract-publish:
             contract-name: faucet
-            expected-sender: ST3J9SS0Y8R6M220C75KPBXGYQESC1CYXTV9N4BJK
-            cost: 35740
+            expected-sender: ST39TJ8FFJVZ4211VZYQ9MBGP0V62PQXFNBDHBZE
+            cost: 35350
             path: contracts/faucet.clar
             anchor-block-only: true
             clarity-version: 3
         - contract-publish:
             contract-name: genesis
-            expected-sender: ST3J9SS0Y8R6M220C75KPBXGYQESC1CYXTV9N4BJK
-            cost: 41990
+            expected-sender: ST39TJ8FFJVZ4211VZYQ9MBGP0V62PQXFNBDHBZE
+            cost: 42060
             path: contracts/genesis.clar
+            anchor-block-only: true
+            clarity-version: 3
+        - contract-publish:
+            contract-name: street-market
+            expected-sender: ST39TJ8FFJVZ4211VZYQ9MBGP0V62PQXFNBDHBZE
+            cost: 124650
+            path: contracts/street-market.clar
             anchor-block-only: true
             clarity-version: 3
       epoch: "3.3"

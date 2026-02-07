@@ -1,23 +1,25 @@
-(define-constant ERR-UNAUTHORIZED u990)
-(define-constant ERR-YOU-POOR u991)
+(define-constant ERR-UNAUTHORIZED u1)
+(define-constant ERR-YOU-POOR u2)
 (define-fungible-token welshcorgicoin)
 (define-data-var token-uri (optional (string-utf8 256)) (some u"https://gateway.lighthouse.storage/ipfs/bafkreig2uvirvipzxp43kjffjmuyjmiu2t6orzzmu6zjplnqwtsnzz43te"))
 (define-constant contract-creator tx-sender)
 (impl-trait 'SP3FBR2AGK5H9QBDH3EEN6DF8EK8JY7RX8QJ5SVTE.sip-010-trait-ft-standard.sip-010-trait)
 
 ;; SIP-010 Standard
-
+;; #[allow(unchecked_data)]
 (define-public (transfer (amount uint) (from principal) (to principal) (memo (optional (buff 34))))
     (begin
         (asserts! (is-eq from tx-sender)
             (err ERR-UNAUTHORIZED))
+
+        ;;(print { from: from, tx-sender: tx-sender, to: to, amount: amount })
 
         (ft-transfer? welshcorgicoin amount from to)
     )
 )
 
 (define-read-only (get-name)
-    (ok "Testnet Welsh")
+    (ok "Welshcorgicoin")
 )
 
 (define-read-only (get-symbol)
@@ -37,11 +39,11 @@
     (ok (ft-get-supply welshcorgicoin)
     )
 )
-
+;; #[allow(unchecked_data)]
 (define-public (set-token-uri (value (string-utf8 256)))
-    (if 
-        (is-eq tx-sender contract-creator) 
-            (ok (var-set token-uri (some value))) 
+    (if
+        (is-eq tx-sender contract-creator)
+            (ok (var-set token-uri (some value)))
         (err ERR-UNAUTHORIZED)
     )
 )
@@ -62,7 +64,7 @@
 
 (define-private (check-err (result (response bool uint)) (prior (response bool uint)))
   (match prior ok-value result
-               err-value (err err-value)
+    err-value (err err-value)
   )
 )
 
@@ -80,5 +82,5 @@
 ;; The Great $WELSH TGE / Total 10B
 
 (begin
-  (try! (ft-mint? welshcorgicoin u10000000000000000 contract-creator)) 
-)                   
+  (try! (ft-mint? welshcorgicoin u10000000000000000 contract-creator))
+)

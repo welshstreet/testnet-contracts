@@ -1,4 +1,4 @@
-;; Welsh Street Exchange
+;; Welsh Street Market
 
 (use-trait sip-010 'SP3FBR2AGK5H9QBDH3EEN6DF8EK8JY7RX8QJ5SVTE.sip-010-trait-ft-standard.sip-010-trait)
 
@@ -9,41 +9,38 @@
 (define-constant ERR_ALREADY_INITIALIZED (err u903))
 (define-constant ERR_NOT_TREASURY (err u904))
 (define-constant ERR_LOCKED_TREASURY (err u905))
-(define-constant ERR_INVALID_PRINCIPAL (err u906))
-(define-constant ERR_INSUFFICIENT_AVAILABLE_LIQUIDITY (err u907))
-(define-constant ERR_INVALID_AMOUNT (err u908))
+(define-constant ERR_NOT_AVAILABLE (err u906))
+(define-constant ERR_INVALID_AMOUNT (err u907))
 
 ;; constants
 (define-constant BASIS u10000)
-(define-constant DECIMALS u1000000)
-(define-constant MAX_FEE u200)
-(define-constant MAX_REV u200)
-(define-constant MAX_TAX u200)
-(define-constant MIN_FEE u50)
-(define-constant MIN_REV u50)
-(define-constant MIN_TAX u50)
+(define-constant MAX_FEE u100)
+(define-constant MAX_REV u100)
+(define-constant MAX_TAX u100)
+(define-constant MIN_FEE u1)
+(define-constant MIN_REV u1)
+(define-constant MIN_TAX u1)
 
 ;; variables
 (define-data-var contract-owner principal tx-sender)
-(define-data-var fee uint u100)
+(define-data-var fee uint u50)
 (define-data-var locked-a uint u0)
 (define-data-var locked-b uint u0)
 (define-data-var reserve-a uint u0)
 (define-data-var reserve-b uint u0)
-(define-data-var rev uint u100)
+(define-data-var rev uint u50)
 (define-data-var tax uint u100)
 
 ;; treasury account
 (define-data-var treasury-address principal (var-get contract-owner))
-(define-data-var treasury-locked bool false)
 
 ;; exchange functions 
 (define-public (burn-liquidity (amount uint))
   (begin
     (asserts! (> amount u0) ERR_ZERO_AMOUNT)
-    (try! (contract-call? .rewards update-burn-rewards tx-sender amount))
-    (try! (contract-call? .credit transfer amount tx-sender .exchange none))
-    (try! (as-contract (contract-call? .credit burn amount)))
+    (try! (contract-call? .credit-token transfer amount tx-sender .street-market none))
+    (try! (contract-call? .street-rewards decrease-rewards tx-sender amount))
+    (try! (as-contract (contract-call? .credit-token burn amount)))
     (ok {
       amount-lp: amount,
     })
@@ -54,26 +51,27 @@
   (let (
     (lock-a (var-get locked-a))
     (lock-b (var-get locked-b))
-    (res-a (var-get reserve-a))
-    (res-b (var-get reserve-b))
-    (amount-b (if (is-eq res-a u0) u0 (/ (* amount-a res-b) res-a)))
+    (res-a  (var-get reserve-a))
+    (res-b  (var-get reserve-b))
   )
-  (begin
-    (asserts! (> amount-a u0) ERR_ZERO_AMOUNT)
-    (asserts! (> amount-b u0) ERR_INSUFFICIENT_AVAILABLE_LIQUIDITY)
-    (asserts! (if (is-eq res-a u0)
-      (is-eq tx-sender (var-get contract-owner))
-      true) ERR_NOT_INITIALIZED)
-    (try! (contract-call? .welshcorgicoin transfer amount-a tx-sender .exchange none))
-    (try! (contract-call? .street transfer amount-b tx-sender .exchange none))
-    (var-set locked-a (+ lock-a amount-a))
-    (var-set locked-b (+ lock-b amount-b))
-    (var-set reserve-a (+ res-a amount-a))
-    (var-set reserve-b (+ res-b amount-b))
-    (ok {
-      amount-a: amount-a,
-      amount-b: amount-b,
-      })
+    (begin
+      (asserts! (> amount-a u0) ERR_ZERO_AMOUNT)
+      (asserts! (and (> res-a u0) (> res-b u0)) ERR_NOT_INITIALIZED)
+      (let ((amount-b (/ (* amount-a res-b) res-a)))
+        (begin
+          (asserts! (> amount-b u0) ERR_ZERO_AMOUNT)
+          (try! (contract-call? .welshcorgicoin transfer amount-a tx-sender .street-market none))
+          (try! (contract-call? .street-token transfer amount-b tx-sender .street-market none))
+          (var-set locked-a (+ lock-a amount-a))
+          (var-set locked-b (+ lock-b amount-b))
+          (var-set reserve-a (+ res-a amount-a))
+          (var-set reserve-b (+ res-b amount-b))
+          (ok { 
+            amount-a: amount-a, 
+            amount-b: amount-b 
+          })
+        )
+      )
     )
   )
 )
@@ -84,7 +82,7 @@
     (lock-b (var-get locked-b))
     (res-a (var-get reserve-a))
     (res-b (var-get reserve-b))
-    (total-supply-lp (unwrap-panic (contract-call? .credit get-total-supply)))
+    (total-supply-lp (unwrap-panic (contract-call? .credit-token get-total-supply)))
     (amount-lp (sqrti (* amount-a amount-b)))
   )
   (begin
@@ -95,12 +93,12 @@
       (and (is-eq res-a u0) (is-eq res-b u0))
       (is-eq total-supply-lp u0))
       ERR_ALREADY_INITIALIZED)
-    (try! (contract-call? .welshcorgicoin transfer amount-a tx-sender .exchange none))
-    (try! (contract-call? .street transfer amount-b tx-sender .exchange none))
-    (try! (contract-call? .credit mint amount-lp))
-    (try! (contract-call? .rewards update-provide-rewards tx-sender amount-lp))
-    (var-set reserve-a (+ amount-a lock-a))
-    (var-set reserve-b (+ amount-b lock-b))
+    (try! (contract-call? .welshcorgicoin transfer amount-a tx-sender .street-market none))
+    (try! (contract-call? .street-token transfer amount-b tx-sender .street-market none))
+    (try! (contract-call? .credit-token mint amount-lp))
+    (try! (contract-call? .street-rewards increase-rewards tx-sender amount-lp))
+    (var-set reserve-a (+ lock-a amount-a))
+    (var-set reserve-b (+ lock-b amount-b))
     (ok {
       amount-a: amount-a,
       amount-b: amount-b,
@@ -114,37 +112,36 @@
   (let (
     (lock-a (var-get locked-a))
     (lock-b (var-get locked-b))
-    (res-a (var-get reserve-a))
-    (res-b (var-get reserve-b))
+    (res-a  (var-get reserve-a))
+    (res-b  (var-get reserve-b))
     (avail-a (if (>= res-a lock-a) (- res-a lock-a) u0))
     (avail-b (if (>= res-b lock-b) (- res-b lock-b) u0))
-    (total-supply-lp (unwrap-panic (contract-call? .credit get-total-supply)))
-    (amount-b (if (is-eq avail-a u0) u0 (/ (* amount-a avail-b) avail-a)))
-    (amount-lp (if (or (is-eq total-supply-lp u0) (and (is-eq avail-a u0) (is-eq avail-b u0)))
-      (sqrti (* amount-a amount-b))
+    (total-supply-lp (unwrap-panic (contract-call? .credit-token get-total-supply)))
+  )
+    (begin
+      (asserts! (> amount-a u0) ERR_ZERO_AMOUNT)
+      (asserts! (> total-supply-lp u0) ERR_NOT_INITIALIZED)
+      (asserts! (and (> avail-a u0) (> avail-b u0)) ERR_NOT_INITIALIZED)
       (let (
+        (amount-b (/ (* amount-a avail-b) avail-a))
         (lp-from-a (/ (* amount-a total-supply-lp) avail-a))
         (lp-from-b (/ (* amount-b total-supply-lp) avail-b))
+        (amount-lp (if (< lp-from-a lp-from-b) lp-from-a lp-from-b))
       )
-      (if (< lp-from-a lp-from-b) lp-from-a lp-from-b))))
-  )
-  (begin
-    (asserts! (> amount-a u0) ERR_ZERO_AMOUNT)
-    (asserts! (> amount-b u0) ERR_INSUFFICIENT_AVAILABLE_LIQUIDITY)
-    (asserts! (if (and (is-eq avail-a u0) (is-eq res-a u0))
-        (is-eq tx-sender (var-get contract-owner))
-        true) ERR_NOT_INITIALIZED)
-    (try! (contract-call? .welshcorgicoin transfer amount-a tx-sender .exchange none))
-    (try! (contract-call? .street transfer amount-b tx-sender .exchange none))
-    (try! (contract-call? .credit mint amount-lp))
-    (try! (contract-call? .rewards update-provide-rewards tx-sender amount-lp))
-    (var-set reserve-a (+ res-a amount-a))
-    (var-set reserve-b (+ res-b amount-b))
-    (ok {
-      amount-a: amount-a,
-      amount-b: amount-b,
-      amount-lp: amount-lp
-      })
+        (begin
+          (try! (contract-call? .welshcorgicoin transfer amount-a tx-sender .street-market none))
+          (try! (contract-call? .street-token transfer amount-b tx-sender .street-market none))
+          (try! (contract-call? .credit-token mint amount-lp))
+          (try! (contract-call? .street-rewards increase-rewards tx-sender amount-lp))
+          (var-set reserve-a (+ res-a amount-a))
+          (var-set reserve-b (+ res-b amount-b))
+          (ok { 
+            amount-a: amount-a, 
+            amount-b: amount-b, 
+            amount-lp: amount-lp 
+            })
+        )
+      )
     )
   )
 )
@@ -157,35 +154,42 @@
     (lock-b (var-get locked-b))
     (avail-a (if (>= res-a lock-a) (- res-a lock-a) u0))
     (avail-b (if (>= res-b lock-b) (- res-b lock-b) u0))
-    (total-supply-lp (unwrap-panic (contract-call? .credit get-total-supply)))
-    (remove-a (/ (* amount-lp avail-a) total-supply-lp))
-    (remove-b (/ (* amount-lp avail-b) total-supply-lp))
-    (tax-a (/ (* remove-a (var-get tax)) BASIS))
-    (tax-b (/ (* remove-b (var-get tax)) BASIS))
-    (amount-a (- remove-a tax-a))
-    (amount-b (- remove-b tax-b))
+    (total-supply-lp (unwrap-panic (contract-call? .credit-token get-total-supply)))
   )
     (begin
       (asserts! (> amount-lp u0) ERR_ZERO_AMOUNT)
-      (try! (contract-call? .credit transfer amount-lp tx-sender .exchange none))
-      (try! (transformer .welshcorgicoin amount-a tx-sender))
-      (try! (transformer .street amount-b tx-sender))
-      (try! (contract-call? .rewards update-remove-rewards tx-sender amount-lp))
-      (try! (as-contract (contract-call? .credit burn amount-lp)))
-      (var-set reserve-a (if (>= res-a amount-a) (- res-a amount-a) u0))
-      (var-set reserve-b (if (>= res-b amount-b) (- res-b amount-b) u0))
-      (var-set locked-a (+ lock-a tax-a))
-      (var-set locked-b (+ lock-b tax-b))
-      (ok { 
-        amount-a: amount-a,
-        amount-b: amount-b,
-        amount-lp: amount-lp,
-        tax-a: tax-a,
-        tax-b: tax-b
-      })
+      (asserts! (> total-supply-lp u0) ERR_NOT_INITIALIZED)
+      (let (
+        (remove-a (/ (* amount-lp avail-a) total-supply-lp))
+        (remove-b (/ (* amount-lp avail-b) total-supply-lp))
+        (tax-a (/ (* remove-a (var-get tax)) BASIS))
+        (tax-b (/ (* remove-b (var-get tax)) BASIS))
+        (amount-a (- remove-a tax-a))
+        (amount-b (- remove-b tax-b))
+      )
+        (begin
+          (try! (contract-call? .credit-token transfer amount-lp tx-sender .street-market none))
+          (try! (transformer .welshcorgicoin amount-a tx-sender))
+          (try! (transformer .street-token amount-b tx-sender))
+          (try! (contract-call? .street-rewards decrease-rewards tx-sender amount-lp))
+          (try! (as-contract (contract-call? .credit-token burn amount-lp)))
+          (var-set reserve-a (if (>= res-a amount-a) (- res-a amount-a) u0))
+          (var-set reserve-b (if (>= res-b amount-b) (- res-b amount-b) u0))
+          (var-set locked-a (+ lock-a tax-a))
+          (var-set locked-b (+ lock-b tax-b))
+          (ok {
+            amount-a: amount-a,
+            amount-b: amount-b,
+            amount-lp: amount-lp,
+            tax-a: tax-a,
+            tax-b: tax-b
+          })
+        )
+      )
     )
   )
 )
+
 
 (define-public (swap-a-b (amount-a uint))
   (let (
@@ -200,28 +204,28 @@
     (num (* amount-a-net res-b))
     (den (+ res-a amount-a-net))
     (amount-b (/ num den))
-    (amount-b-net amount-b)
     (res-a-new (+ res-a amount-a-net))
-    (res-b-new (- res-b amount-b-net))
+    (res-b-new (- res-b amount-b))
     (lock-a-new (if (> res-a u0) (/ (* lock-a res-a-new) res-a) lock-a))
     (lock-b-new (if (> res-b u0) (/ (* lock-b res-b-new) res-b) lock-b))
     (treasury (var-get treasury-address))
   )
     (begin
       (asserts! (> amount-a u0) ERR_ZERO_AMOUNT)
-      (asserts! (> amount-b-net u0) ERR_INVALID_AMOUNT)
-      (try! (contract-call? .welshcorgicoin transfer amount-a tx-sender .exchange none))
+      (asserts! (> amount-b u0) ERR_INVALID_AMOUNT)
+      (asserts! (and (> res-a u0) (> res-b u0)) ERR_NOT_INITIALIZED)
+      (try! (contract-call? .welshcorgicoin transfer amount-a tx-sender .street-market none))
       (try! (transformer .welshcorgicoin rev-a treasury))
-      (try! (transformer .welshcorgicoin fee-a .rewards))
-      (try! (transformer .street amount-b-net tx-sender))
-      (try! (contract-call? .rewards update-rewards-a fee-a))
+      (try! (transformer .welshcorgicoin fee-a .street-rewards))
+      (try! (transformer .street-token amount-b tx-sender))
+      (try! (contract-call? .street-rewards update-rewards-a fee-a))
       (var-set reserve-a res-a-new)
       (var-set reserve-b res-b-new)
       (var-set locked-a lock-a-new)
       (var-set locked-b lock-b-new)
       (ok {
         amount-a: amount-a,
-        amount-b: amount-b-net,
+        amount-b: amount-b,
         fee-a: fee-a,
         res-a: res-a,
         res-a-new: res-a-new,
@@ -246,27 +250,27 @@
     (num (* amount-b-net res-a))
     (den (+ res-b amount-b-net))
     (amount-a (/ num den))
-    (amount-a-net amount-a)
-    (res-a-new (- res-a amount-a-net))
+    (res-a-new (- res-a amount-a))
     (res-b-new (+ res-b amount-b-net))
     (lock-a-new (if (> res-a u0) (/ (* lock-a res-a-new) res-a) lock-a))
     (lock-b-new (if (> res-b u0) (/ (* lock-b res-b-new) res-b) lock-b))
     (treasury (var-get treasury-address))
   )
     (begin
-      (asserts! (> amount-a-net u0) ERR_ZERO_AMOUNT)
-      (asserts! (> amount-b u0) ERR_INVALID_AMOUNT)
-      (try! (contract-call? .street transfer amount-b tx-sender .exchange none))
-      (try! (transformer .street rev-b treasury))
-      (try! (transformer .street fee-b .rewards))
-      (try! (transformer .welshcorgicoin amount-a-net tx-sender))
-      (try! (contract-call? .rewards update-rewards-b fee-b))
+      (asserts! (> amount-b u0) ERR_ZERO_AMOUNT)
+      (asserts! (> amount-a u0) ERR_INVALID_AMOUNT)
+      (asserts! (and (> res-a u0) (> res-b u0)) ERR_NOT_INITIALIZED)
+      (try! (contract-call? .street-token transfer amount-b tx-sender .street-market none))
+      (try! (transformer .street-token rev-b treasury))
+      (try! (transformer .street-token fee-b .street-rewards))
+      (try! (transformer .welshcorgicoin amount-a tx-sender))
+      (try! (contract-call? .street-rewards update-rewards-b fee-b))
       (var-set reserve-a res-a-new)
       (var-set reserve-b res-b-new)
       (var-set locked-a lock-a-new)
       (var-set locked-b lock-b-new)
       (ok {
-        amount-a: amount-a-net,
+        amount-a: amount-a,
         amount-b: amount-b,
         fee-b: fee-b,
         res-a: res-a,
@@ -281,14 +285,13 @@
 
 (define-public (set-contract-owner (new-owner principal))
   (begin
-    (asserts! (is-eq contract-caller (var-get contract-owner)) ERR_NOT_CONTRACT_OWNER)
-    (asserts! (not (is-eq new-owner (var-get contract-owner))) ERR_INVALID_PRINCIPAL)
+    (asserts! (is-eq tx-sender (var-get contract-owner)) ERR_NOT_CONTRACT_OWNER)
     (var-set contract-owner new-owner)
     (ok true)
   )
 )
 
-(define-public (set-exchange-fee (amount uint))
+(define-public (set-market-fee (amount uint))
   (begin
     (asserts! (is-eq tx-sender (var-get contract-owner)) ERR_NOT_CONTRACT_OWNER)
     (asserts! (<= amount MAX_FEE) ERR_INVALID_AMOUNT )
@@ -298,7 +301,7 @@
   )
 )
 
-(define-public (set-exchange-rev (amount uint))
+(define-public (set-market-rev (amount uint))
   (begin
     (asserts! (is-eq tx-sender (var-get contract-owner)) ERR_NOT_CONTRACT_OWNER)
     (asserts! (<= amount MAX_REV) ERR_INVALID_AMOUNT )
@@ -308,7 +311,7 @@
   )
 )
 
-(define-public (set-exchange-tax (amount uint))
+(define-public (set-market-tax (amount uint))
   (begin
     (asserts! (is-eq tx-sender (var-get contract-owner)) ERR_NOT_CONTRACT_OWNER)
     (asserts! (<= amount MAX_TAX) ERR_INVALID_AMOUNT )
@@ -321,26 +324,8 @@
 (define-public (set-treasury-address (new-treasury principal))
   (begin
     (asserts! (is-eq (var-get treasury-address) tx-sender) ERR_NOT_TREASURY)
-    (if (var-get treasury-locked)
-        ERR_LOCKED_TREASURY
-        (begin
-          (var-set treasury-address new-treasury)
-          (ok new-treasury)
-        )
-    )
-  )
-)
-
-(define-public (set-treasury-locked)
-  (begin
-    (asserts! (is-eq (var-get treasury-address) tx-sender) ERR_NOT_TREASURY)
-    (if (var-get treasury-locked)
-        ERR_LOCKED_TREASURY
-        (begin
-          (var-set treasury-locked true)
-          (ok true)
-        )
-    )
+      (var-set treasury-address new-treasury)
+      (ok true)
   )
 )
 
@@ -357,13 +342,12 @@
   (ok {
     bitcoin-block: burn-block-height,
     stacks-block: stacks-block-height
-  })
-)
+  }))
 
 (define-read-only (get-contract-owner)
   (ok (var-get contract-owner)))
 
-(define-read-only (get-exchange-info)
+(define-read-only (get-market-info)
   (let (
     (lock-a (var-get locked-a))
     (lock-b (var-get locked-b))
@@ -386,6 +370,3 @@
 
 (define-read-only (get-treasury-address)
   (ok (var-get treasury-address)))
-
-(define-read-only (get-treasury-locked)
-  (ok (var-get treasury-locked)))

@@ -5,23 +5,16 @@
 .cache/**
 */.cache/**
 *.cache/**
-app/.cache/
 contracts/.cache/
-history.txt
-chainhooks/
+street/.cache/
+capital/.cache/
+**/chainhooks/
 chainhook*
-templates/
-
-Mainnet.toml
-Testnet.toml
+**/templates/
 
 logs
 *.log
 npm-debug.log*
-coverage
 *.info
-costs-reports.json
 node_modules
 *.template.json
-
-Clarinet-console-commands.md
