@@ -256,14 +256,14 @@
         (/ (* rewards PRECISION) total-lp)
         u0))
       (new-index (+ current-index index-increment))
-      (total-rewards (+ (var-get total-distributed-b) EMISSION_AMOUNT))
+      (new-rewards (+ (var-get total-distributed-b) rewards))
     )
     (begin
       (asserts! (is-eq tx-sender (var-get contract-owner)) ERR_NOT_CONTRACT_OWNER)
       (asserts! (> current-epoch last-mint) ERR_EMISSION_INTERVAL)
-      (var-set total-distributed-b total-rewards)
-      (var-set global-index-b new-index)
       (var-set last-mint-epoch current-epoch)
+      (var-set global-index-b new-index)
+      (var-set total-distributed-b new-rewards)
         (ok {
           capital: capital,
           rewards: rewards
@@ -368,8 +368,8 @@
       (asserts! (or (is-eq contract-caller .street-market) 
                     (is-eq contract-caller .street-rewards)) ERR_NOT_AUTHORIZED)
       (asserts! (> amount u0) ERR_ZERO_AMOUNT)
-      (var-set total-distributed-a new-rewards)
       (var-set global-index-a new-index)
+      (var-set total-distributed-a new-rewards)
       (ok true)
     )
   )
@@ -389,8 +389,8 @@
       (asserts! (or (is-eq contract-caller .street-market)
                     (is-eq contract-caller .street-rewards)) ERR_NOT_AUTHORIZED)
       (asserts! (> amount u0) ERR_ZERO_AMOUNT)
-      (var-set total-distributed-b new-rewards)
       (var-set global-index-b new-index)
+      (var-set total-distributed-b new-rewards)
       (ok true)
     )
   )
