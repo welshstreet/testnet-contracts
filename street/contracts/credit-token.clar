@@ -10,7 +10,7 @@
 (define-constant ERR_NOT_TOKEN_OWNER (err u902))
 (define-constant ERR_NOT_AUTHORIZED (err u903))
 
-;; metadata
+;; constants
 (define-constant TOKEN_DECIMALS u6)
 (define-constant TOKEN_NAME "Welsh Street Credit")
 (define-constant TOKEN_SYMBOL "CREDIT")

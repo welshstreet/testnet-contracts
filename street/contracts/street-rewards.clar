@@ -9,7 +9,7 @@
 (define-constant ERR_NOT_AUTHORIZED (err u903))
 (define-constant ERR_NO_USER_STATE (err u904))
 
-;; metadata
+;; constants
 (define-constant BASIS u10000)
 (define-constant EMISSION_AMOUNT u10000000000)
 (define-constant PRECISION u1000000000)

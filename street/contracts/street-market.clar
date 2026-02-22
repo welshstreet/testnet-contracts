@@ -76,7 +76,7 @@
   )
 )
 
-(define-public (provide-initial-liquidity (amount-a uint) (amount-b uint))
+(define-public (initial-liquidity (amount-a uint) (amount-b uint))
   (let (
     (lock-a (var-get locked-a))
     (lock-b (var-get locked-b))

@@ -17,7 +17,7 @@
 (define-constant ERR_LOCKED_CAPITAL_ADDRESS (err u909))
 (define-constant ERR_KILL_SWITCH_FLIPPED (err u911))
 
-;; metadata
+;; constants
 (define-constant BASIS u10000)
 (define-constant STREET_MINT_CAP u5000000000000000)
 (define-constant TOKEN_DECIMALS u6)
@@ -36,7 +36,7 @@
 (define-data-var emission-controller principal tx-sender)
 (define-data-var emission-epoch uint u0)
 (define-data-var kill-switch bool false)
-(define-data-var last-mint-block uint u0)
+(define-data-var last-burn-block uint u0)
 (define-data-var street-minted uint u0)
 (define-data-var token-uri (optional (string-utf8 256)) (some u"https://gateway.lighthouse.storage/ipfs/bafkreibc3v7iih35rfcx66gr4zam74ucet4zy65shrap4jmpr3hsddkvb4"))
 
@@ -46,7 +46,7 @@
 (define-public (emission-mint)
   (let (
       (capital-addr (var-get capital-address))
-      (last-mint (var-get last-mint-block))
+      (last-mint (var-get last-burn-block))
       (total-supply-lp (unwrap-panic (contract-call? .credit-token get-total-supply)))
       (rate (var-get capital-rate))
       (capital (/ (* EMISSION_AMOUNT rate) BASIS))
@@ -65,7 +65,7 @@
           true
         )
       (var-set emission-epoch (+ (var-get emission-epoch) u1))
-      (var-set last-mint-block burn-block-height)
+      (var-set last-burn-block burn-block-height)
       (ok {
         capital: capital,  
         rewards: rewards,
@@ -175,8 +175,8 @@
 (define-read-only (get-kill-switch)
   (ok (var-get kill-switch)))
 
-(define-read-only (get-last-mint-block)
-  (ok (var-get last-mint-block)))
+(define-read-only (get-last-burn-block)
+  (ok (var-get last-burn-block)))
 
 (define-read-only (get-street-minted)
   (ok (var-get street-minted)))
