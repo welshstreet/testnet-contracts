@@ -18,18 +18,23 @@ path = 'contracts/credit-token.clar'
 clarity_version = 3
 epoch = 'latest'
 
-[contracts.faucet]
-path = 'contracts/faucet.clar'
+[contracts.emission-controller]
+path = 'contracts/emission-controller.clar'
 clarity_version = 3
 epoch = 'latest'
 
-[contracts.genesis]
-path = 'contracts/genesis.clar'
+[contracts.street-controller]
+path = 'contracts/street-controller.clar'
 clarity_version = 3
 epoch = 'latest'
 
 [contracts.street-market]
 path = 'contracts/street-market.clar'
+clarity_version = 3
+epoch = 'latest'
+
+[contracts.street-nft]
+path = 'contracts/street-nft.clar'
 clarity_version = 3
 epoch = 'latest'
 
@@ -43,13 +48,19 @@ path = 'contracts/street-token.clar'
 clarity_version = 3
 epoch = 'latest'
 
+[contracts.welsh-faucet]
+path = 'contracts/welsh-faucet.clar'
+clarity_version = 3
+epoch = 'latest'
+
 [contracts.welshcorgicoin]
 path = 'contracts/welshcorgicoin.clar'
 clarity_version = 3
 epoch = 'latest'
-
 [repl.analysis]
 passes = ['call_checker']
+
+[repl.analysis.lint_groups]
 
 [repl.analysis.lints]
 

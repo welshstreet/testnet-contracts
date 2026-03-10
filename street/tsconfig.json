@@ -1,3 +1,4 @@
+
 {
   "compilerOptions": {
     "target": "ESNext",
@@ -18,8 +19,5 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": [
-    "node_modules/@stacks/clarinet-sdk/vitest-helpers/src",
-    "tests"
-  ]
+  "include": ["node_modules/@stacks/clarinet-sdk/vitest-helpers/src", "tests", "legacy-tests", "transformer.test.ts"]
 }

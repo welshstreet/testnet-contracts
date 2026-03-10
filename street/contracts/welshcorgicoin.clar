@@ -1,7 +1,6 @@
 (define-constant ERR-UNAUTHORIZED u1)
-(define-constant ERR-YOU-POOR u2)
 (define-fungible-token welshcorgicoin)
-(define-data-var token-uri (optional (string-utf8 256)) (some u"https://gateway.lighthouse.storage/ipfs/bafkreig2uvirvipzxp43kjffjmuyjmiu2t6orzzmu6zjplnqwtsnzz43te"))
+(define-data-var token-uri (optional (string-utf8 256)) (some u"https://gateway.lighthouse.storage/ipfs/bafybeidzkpzekf4gx3hlxqjqjkb3xmn2yrp2fcsqukexs4job57e5jwi7a/welsh.json"))
 (define-constant contract-creator tx-sender)
 (impl-trait 'SP3FBR2AGK5H9QBDH3EEN6DF8EK8JY7RX8QJ5SVTE.sip-010-trait-ft-standard.sip-010-trait)
 

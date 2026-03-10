@@ -3,28 +3,27 @@
 (use-trait sip-010 'SP3FBR2AGK5H9QBDH3EEN6DF8EK8JY7RX8QJ5SVTE.sip-010-trait-ft-standard.sip-010-trait)
 
 ;; errors
-(define-constant ERR_ZERO_AMOUNT (err u900))
-(define-constant ERR_NOT_CONTRACT_OWNER (err u901))
-(define-constant ERR_EMISSION_INTERVAL (err u902))
-(define-constant ERR_NOT_AUTHORIZED (err u903))
-(define-constant ERR_NO_USER_STATE (err u904))
+(define-constant ERR_ZERO_AMOUNT        (err u951))
+(define-constant ERR_NOT_CONTRACT_OWNER (err u952))
+(define-constant ERR_NOT_AUTHORIZED     (err u953))
+(define-constant ERR_NO_USER_STATE      (err u954))
+(define-constant ERR_CLEANUP_INTERVAL   (err u955))
 
 ;; constants
-(define-constant BASIS u10000)
-(define-constant EMISSION_AMOUNT u10000000000)
 (define-constant PRECISION u1000000000)
+(define-constant CLEANUP_INTERVAL u144)
 
 ;; variables
 (define-data-var contract-owner principal tx-sender)
 (define-data-var global-index-a uint u0)
 (define-data-var global-index-b uint u0)
-(define-data-var last-mint-epoch uint u0)
+(define-data-var last-cleanup-block uint u0)
 (define-data-var total-distributed-a uint u0)
 (define-data-var total-distributed-b uint u0)
 (define-data-var total-claimed-a uint u0)
 (define-data-var total-claimed-b uint u0)
 
-(define-map user-rewards
+(define-map users
   { account: principal }
   {
     balance: uint,
@@ -46,7 +45,7 @@
       debt-b: u0,
       index-a: u0,
       index-b: u0}
-      (map-get? user-rewards { account: tx-sender })))
+      (map-get? users { account: tx-sender })))
     (current-global-a (var-get global-index-a))
     (current-global-b (var-get global-index-b))
     (debt-a (get debt-a info))
@@ -69,7 +68,7 @@
       )
       (var-set total-claimed-a (+ (var-get total-claimed-a) unclaimed-a))
       (var-set total-claimed-b (+ (var-get total-claimed-b) unclaimed-b))
-      (map-set user-rewards { account: tx-sender } {
+      (map-set users { account: tx-sender } {
         balance: balance,
         block: (get block info),
         debt-a: (+ debt-a unclaimed-a),
@@ -129,15 +128,18 @@
     (cleanup-data (calculate-cleanup-rewards))
     (cleanup-a (get cleanup-a cleanup-data))
     (cleanup-b (get cleanup-b cleanup-data))
+    (last-cleanup (var-get last-cleanup-block))
   )
     (begin
-      (asserts! (is-eq tx-sender (var-get contract-owner)) ERR_NOT_CONTRACT_OWNER)
+      (asserts! (>= burn-block-height (+ last-cleanup CLEANUP_INTERVAL)) 
+        ERR_CLEANUP_INTERVAL)
       (if (> cleanup-a u0)
         (try! (as-contract (update-rewards-a cleanup-a)))
         true)
       (if (> cleanup-b u0)
         (try! (as-contract (update-rewards-b cleanup-b)))
         true)
+      (var-set last-cleanup-block burn-block-height)
       (ok {
         amount-a: cleanup-a,
         amount-b: cleanup-b,
@@ -152,7 +154,7 @@
     (block stacks-block-height)
     (global-a (var-get global-index-a))
     (global-b (var-get global-index-b))
-    (info (unwrap! (map-get? user-rewards { account: user }) ERR_NO_USER_STATE))
+    (info (unwrap! (map-get? users { account: user }) ERR_NO_USER_STATE))
     (total-lp (unwrap-panic (contract-call? .credit-token get-total-supply)))
     (old-balance (+ balance amount))
     (other-lp (- total-lp old-balance))
@@ -188,7 +190,7 @@
             (begin
               (var-set global-index-b (+ global-b redistributed-b)))
             true)
-          (map-delete user-rewards { account: user })
+          (map-delete users { account: user })
           (let (
             (new-global-a (var-get global-index-a))
             (new-global-b (var-get global-index-b))
@@ -202,7 +204,7 @@
                         new-global-b))
           )
             (if (> balance u0)
-              (map-set user-rewards
+              (map-set users
                 { account: user }
                 { balance: balance,
                   block: block,
@@ -243,42 +245,13 @@
   )
 )
 
-(define-public (emission-rewards)
-  (let (
-      (current-epoch (unwrap-panic (contract-call? .street-token get-current-epoch)))
-      (last-mint (var-get last-mint-epoch))
-      (current-index (var-get global-index-b))
-      (rate (unwrap-panic (contract-call? .street-token get-capital-rate)))
-      (capital (/ (* EMISSION_AMOUNT rate) BASIS))
-      (rewards (- EMISSION_AMOUNT capital))
-      (total-lp (unwrap-panic (contract-call? .credit-token get-total-supply)))
-      (index-increment (if (> total-lp u0)
-        (/ (* rewards PRECISION) total-lp)
-        u0))
-      (new-index (+ current-index index-increment))
-      (new-rewards (+ (var-get total-distributed-b) rewards))
-    )
-    (begin
-      (asserts! (is-eq tx-sender (var-get contract-owner)) ERR_NOT_CONTRACT_OWNER)
-      (asserts! (> current-epoch last-mint) ERR_EMISSION_INTERVAL)
-      (var-set last-mint-epoch current-epoch)
-      (var-set global-index-b new-index)
-      (var-set total-distributed-b new-rewards)
-        (ok {
-          capital: capital,
-          rewards: rewards
-        })
-    )
-  )
-)
-
 (define-public (increase-rewards (user principal) (amount uint))
   (let (
     (balance (unwrap-panic (contract-call? .credit-token get-balance user)))
     (block stacks-block-height)
     (global-a (var-get global-index-a))
     (global-b (var-get global-index-b))
-    (info (map-get? user-rewards { account: user }))
+    (info (map-get? users { account: user }))
     (old-balance (- balance amount))
   )
     (begin
@@ -304,7 +277,7 @@
               (preserve-debt-a (if (> new-earned-a unclaimed-a) (- new-earned-a unclaimed-a) u0))
               (preserve-debt-b (if (> new-earned-b unclaimed-b) (- new-earned-b unclaimed-b) u0))
             )
-              (map-set user-rewards { account: user } {
+              (map-set users { account: user } {
                 balance: balance,
                 block: block,
                 debt-a: preserve-debt-a,
@@ -321,7 +294,7 @@
                                 (- global-b (/ (* unclaimed-b PRECISION) balance))
                                 global-b))
             )
-              (map-set user-rewards { account: user } {
+              (map-set users { account: user } {
                 balance: balance,
                 block: block,
                 debt-a: u0,
@@ -332,7 +305,7 @@
             )
           )
         )
-        (map-set user-rewards { account: user } {
+        (map-set users { account: user } {
           balance: balance,
           block: block,
           debt-a: u0,
@@ -356,8 +329,8 @@
 
 (define-public (update-rewards-a (amount uint))
   (let (
-      (current-index (var-get global-index-a))
       (total-lp (unwrap-panic (contract-call? .credit-token get-total-supply)))
+      (current-index (var-get global-index-a))
       (index-increment (if (> total-lp u0)
         (/ (* amount PRECISION) total-lp)
         u0))
@@ -365,7 +338,8 @@
       (new-rewards (+ (var-get total-distributed-a) amount))
     )
     (begin
-      (asserts! (or (is-eq contract-caller .street-market) 
+      (asserts! (or (is-eq contract-caller .street-controller)
+                    (is-eq contract-caller .street-market)
                     (is-eq contract-caller .street-rewards)) ERR_NOT_AUTHORIZED)
       (asserts! (> amount u0) ERR_ZERO_AMOUNT)
       (var-set global-index-a new-index)
@@ -377,8 +351,8 @@
 
 (define-public (update-rewards-b (amount uint))
   (let (
-      (current-index (var-get global-index-b))
       (total-lp (unwrap-panic (contract-call? .credit-token get-total-supply)))
+      (current-index (var-get global-index-b))
       (index-increment (if (> total-lp u0)
         (/ (* amount PRECISION) total-lp)
         u0))
@@ -387,7 +361,8 @@
     )
     (begin
       (asserts! (or (is-eq contract-caller .street-market)
-                    (is-eq contract-caller .street-rewards)) ERR_NOT_AUTHORIZED)
+                    (is-eq contract-caller .street-rewards)
+                    (is-eq contract-caller .emission-controller)) ERR_NOT_AUTHORIZED)
       (asserts! (> amount u0) ERR_ZERO_AMOUNT)
       (var-set global-index-b new-index)
       (var-set total-distributed-b new-rewards)
@@ -431,7 +406,7 @@
       debt-b: u0,
       index-a: u0,
       index-b: u0}
-      (map-get? user-rewards { account: user })))
+      (map-get? users { account: user })))
     (current-global-a (var-get global-index-a))
     (current-global-b (var-get global-index-b))
     (debt-a (get debt-a info))
