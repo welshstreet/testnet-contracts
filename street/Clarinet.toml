@@ -57,6 +57,7 @@ epoch = 'latest'
 path = 'contracts/welshcorgicoin.clar'
 clarity_version = 3
 epoch = 'latest'
+
 [repl.analysis]
 passes = ['call_checker']
 

@@ -6,6 +6,7 @@
 (define-constant ERR_NOT_FOUND           (err u993))
 (define-constant ERR_NOT_OWNER           (err u994))
 (define-constant ERR_MINT_CAP            (err u995))
+(define-constant ERR_MAX_TOKENS_REACHED  (err u996))
 
 ;; constants
 (define-constant MINT_CAP u21000)
@@ -26,17 +27,16 @@
       (asserts! (is-eq contract-caller .street-controller) ERR_NOT_AUTHORIZED)
       (asserts! (<= token-id MINT_CAP) ERR_MINT_CAP)
       (try! (nft-mint? welsh-street-genesis-nft token-id recipient))
-      (map-set users recipient (unwrap-panic (as-max-len? (append existing-tokens token-id) u2)))
+      (map-set users recipient (unwrap! (as-max-len? (append existing-tokens token-id) u2) ERR_MAX_TOKENS_REACHED))
       (ok token-id)
     )
   )
 )
 
 (define-public (transfer (token-id uint) (sender principal) (recipient principal))
-  (let ((owner (nft-get-owner? welsh-street-genesis-nft token-id)))
+  (let ((owner (unwrap! (nft-get-owner? welsh-street-genesis-nft token-id) ERR_NOT_FOUND)))
     (begin
-      (asserts! (is-some owner) ERR_NOT_FOUND)
-      (asserts! (is-eq (unwrap-panic owner) sender) ERR_NOT_OWNER)
+      (asserts! (is-eq owner sender) ERR_NOT_OWNER)
       (asserts! (is-eq tx-sender sender) ERR_NOT_AUTHORIZED)
       (try! (nft-transfer? welsh-street-genesis-nft token-id sender recipient))
       (ok true)
