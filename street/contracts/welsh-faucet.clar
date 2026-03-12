@@ -4,7 +4,7 @@
 
 ;; errors
 (define-constant ERR_NOT_CONTRACT_OWNER (err u971))
-(define-constant ERR_BALANCE_            (err u972))
+(define-constant ERR_BALANCE           (err u972))
 (define-constant ERR_COOLDOWN           (err u973))
 
 ;; constants
@@ -68,7 +68,7 @@
 
 (define-read-only (get-balance)
   (as-contract? ()
-    (unwrap! (contract-call? .welshcorgicoin get-balance tx-sender) ERR_BALANCE_)
+    (unwrap! (contract-call? .welshcorgicoin get-balance tx-sender) ERR_BALANCE)
   )
 )
 
