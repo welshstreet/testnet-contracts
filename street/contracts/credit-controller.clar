@@ -20,11 +20,12 @@
   )
     (begin
       (asserts! (> amount u0) ERR_ZERO_AMOUNT)
-      (asserts! (is-eq tx-sender sender) ERR_NOT_TOKEN_OWNER)
+      (asserts! (is-eq contract-caller sender) ERR_NOT_TOKEN_OWNER)
       (asserts! (>= sender-balance amount) ERR_BALANCE)
-      (try! (as-contract (contract-call? .credit-token transfer amount sender recipient memo)))
-      (try! (as-contract (contract-call? .street-rewards decrease-rewards sender amount)))
-      (try! (as-contract (contract-call? .street-rewards increase-rewards recipient amount)))
+      (try! (as-contract? ()
+        (try! (contract-call? .credit-token transfer amount sender recipient memo))))
+      (try! (contract-call? .street-rewards decrease-rewards sender amount))
+      (try! (contract-call? .street-rewards increase-rewards recipient amount))
       (match memo content (print content) 0x)
       (ok {
         amount: amount
@@ -35,7 +36,7 @@
 
 (define-public (set-contract-owner (new-owner principal))
   (begin
-    (asserts! (is-eq tx-sender (var-get contract-owner)) ERR_NOT_CONTRACT_OWNER)
+    (asserts! (is-eq contract-caller (var-get contract-owner)) ERR_NOT_CONTRACT_OWNER)
     (var-set contract-owner new-owner)
     (ok true)
   )

@@ -4,7 +4,8 @@
 
 ;; errors
 (define-constant ERR_NOT_CONTRACT_OWNER (err u971))
-(define-constant ERR_COOLDOWN           (err u972))
+(define-constant ERR_BALANCE_            (err u972))
+(define-constant ERR_COOLDOWN           (err u973))
 
 ;; constants
 (define-constant AMOUNT u1000000000000)
@@ -60,16 +61,24 @@
     (amount uint)
     (recipient principal)
   )
-  (as-contract (contract-call? token transfer amount tx-sender recipient none))
+  (as-contract? ((with-ft (contract-of token) "*" amount))
+    (try! (contract-call? token transfer amount tx-sender recipient none))
+  )
 )
 
 ;; custom read-only
+(define-read-only (is-sip010 (token <sip-010>))
+  (ok (is-eq token token))
+)
+
 (define-read-only (get-amount)
   (ok AMOUNT)
 )
 
 (define-read-only (get-balance)
-  (contract-call? .welshcorgicoin get-balance (as-contract tx-sender))
+  (as-contract? ()
+    (unwrap! (contract-call? .welshcorgicoin get-balance tx-sender) ERR_BALANCE_)
+  )
 )
 
 (define-read-only (get-cooldown)

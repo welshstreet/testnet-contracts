@@ -74,50 +74,50 @@ plan:
       contract-name: credit-token
       emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
       path: contracts/credit-token.clar
-      clarity-version: 3
+      clarity-version: 4
     - transaction-type: emulated-contract-publish
       contract-name: street-token
       emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
       path: contracts/street-token.clar
-      clarity-version: 3
+      clarity-version: 4
     - transaction-type: emulated-contract-publish
       contract-name: welshcorgicoin
       emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
       path: contracts/welshcorgicoin.clar
-      clarity-version: 3
+      clarity-version: 4
     - transaction-type: emulated-contract-publish
       contract-name: street-rewards
       emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
       path: contracts/street-rewards.clar
-      clarity-version: 3
+      clarity-version: 4
     - transaction-type: emulated-contract-publish
       contract-name: credit-controller
       emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
       path: contracts/credit-controller.clar
-      clarity-version: 3
+      clarity-version: 4
     - transaction-type: emulated-contract-publish
       contract-name: emission-controller
       emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
       path: contracts/emission-controller.clar
-      clarity-version: 3
+      clarity-version: 4
     - transaction-type: emulated-contract-publish
       contract-name: street-nft
       emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
       path: contracts/street-nft.clar
-      clarity-version: 3
+      clarity-version: 4
     - transaction-type: emulated-contract-publish
       contract-name: street-controller
       emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
       path: contracts/street-controller.clar
-      clarity-version: 3
+      clarity-version: 4
     - transaction-type: emulated-contract-publish
       contract-name: street-market
       emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
       path: contracts/street-market.clar
-      clarity-version: 3
+      clarity-version: 4
     - transaction-type: emulated-contract-publish
       contract-name: welsh-faucet
       emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
       path: contracts/welsh-faucet.clar
-      clarity-version: 3
+      clarity-version: 4
     epoch: '3.3'

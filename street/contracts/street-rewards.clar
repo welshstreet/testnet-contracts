@@ -8,6 +8,9 @@
 (define-constant ERR_NOT_AUTHORIZED     (err u953))
 (define-constant ERR_NO_USER_STATE      (err u954))
 (define-constant ERR_CLEANUP_INTERVAL   (err u955))
+(define-constant ERR_CLEANUP_DATA       (err u956))
+(define-constant ERR_BALANCE            (err u957))
+(define-constant ERR_SUPPLY             (err u958))
 
 ;; constants
 (define-constant PRECISION u1000000000)
@@ -37,7 +40,7 @@
 
 (define-public (claim-rewards)
   (let (
-    (balance (unwrap-panic (contract-call? .credit-token get-balance tx-sender)))
+    (balance (unwrap! (contract-call? .credit-token get-balance contract-caller) ERR_BALANCE))
     (info (default-to {
       balance: u0,
       block: u0,
@@ -45,7 +48,7 @@
       debt-b: u0,
       index-a: u0,
       index-b: u0}
-      (map-get? users { account: tx-sender })))
+      (map-get? users { account: contract-caller })))
     (current-global-a (var-get global-index-a))
     (current-global-b (var-get global-index-b))
     (debt-a (get debt-a info))
@@ -59,16 +62,16 @@
   )
     (begin
       (if (> unclaimed-a u0)
-        (try! (transformer .welshcorgicoin unclaimed-a tx-sender))
+        (try! (transformer .welshcorgicoin unclaimed-a contract-caller))
         true
       )
       (if (> unclaimed-b u0)
-        (try! (transformer .street-token unclaimed-b tx-sender))
+        (try! (transformer .street-token unclaimed-b contract-caller))
         true
       )
       (var-set total-claimed-a (+ (var-get total-claimed-a) unclaimed-a))
       (var-set total-claimed-b (+ (var-get total-claimed-b) unclaimed-b))
-      (map-set users { account: tx-sender } {
+      (map-set users { account: contract-caller } {
         balance: balance,
         block: (get block info),
         debt-a: (+ debt-a unclaimed-a),
@@ -86,8 +89,8 @@
 
 (define-private (calculate-cleanup-rewards)
   (let (
-    (actual-a (unwrap-panic (contract-call? .welshcorgicoin get-balance .street-rewards)))
-    (actual-b (unwrap-panic (contract-call? .street-token get-balance .street-rewards)))
+    (actual-a (unwrap! (contract-call? .welshcorgicoin get-balance .street-rewards) ERR_BALANCE))
+    (actual-b (unwrap! (contract-call? .street-token get-balance .street-rewards) ERR_BALANCE))
     (claimed-a (var-get total-claimed-a))
     (claimed-b (var-get total-claimed-b))
     (distributed-a (var-get total-distributed-a))
@@ -108,7 +111,7 @@
                       actual-b
                       u0)))
   )
-    {
+    (ok {
       actual-a: actual-a,
       actual-b: actual-b,
       claimed-a: claimed-a,
@@ -119,13 +122,13 @@
       distributed-b: distributed-b,
       outstanding-a: outstanding-a,
       outstanding-b: outstanding-b
-    }
+    })
   )
 )
 
 (define-public (cleanup-rewards)
   (let (
-    (cleanup-data (calculate-cleanup-rewards))
+    (cleanup-data (unwrap! (calculate-cleanup-rewards) ERR_CLEANUP_DATA))
     (cleanup-a (get cleanup-a cleanup-data))
     (cleanup-b (get cleanup-b cleanup-data))
     (last-cleanup (var-get last-cleanup-block))
@@ -134,10 +137,12 @@
       (asserts! (>= burn-block-height (+ last-cleanup CLEANUP_INTERVAL)) 
         ERR_CLEANUP_INTERVAL)
       (if (> cleanup-a u0)
-        (try! (as-contract (update-rewards-a cleanup-a)))
+        (try! (as-contract? ()
+          (try! (update-rewards-a cleanup-a))))
         true)
       (if (> cleanup-b u0)
-        (try! (as-contract (update-rewards-b cleanup-b)))
+        (try! (as-contract? ()
+          (try! (update-rewards-b cleanup-b))))
         true)
       (var-set last-cleanup-block burn-block-height)
       (ok {
@@ -150,12 +155,12 @@
 
 (define-public (decrease-rewards (user principal) (amount uint))
   (let (
-    (balance (unwrap-panic (contract-call? .credit-token get-balance user)))
+    (balance (unwrap! (contract-call? .credit-token get-balance user) ERR_BALANCE))
     (block stacks-block-height)
     (global-a (var-get global-index-a))
     (global-b (var-get global-index-b))
     (info (unwrap! (map-get? users { account: user }) ERR_NO_USER_STATE))
-    (total-lp (unwrap-panic (contract-call? .credit-token get-total-supply)))
+    (total-lp (unwrap! (contract-call? .credit-token get-total-supply) ERR_SUPPLY))
     (old-balance (+ balance amount))
     (other-lp (- total-lp old-balance))
   )
@@ -226,15 +231,17 @@
     (begin
       (if (> amount-a u0)
       (begin
-        (try! (contract-call? .welshcorgicoin transfer amount-a tx-sender .street-rewards none))
-        (try! (as-contract (update-rewards-a amount-a)))
+        (try! (contract-call? .welshcorgicoin transfer amount-a contract-caller .street-rewards none))
+        (try! (as-contract? ()
+          (try! (update-rewards-a amount-a))))
       )
         true
       )
       (if (> amount-b u0)
       (begin
-        (try! (contract-call? .street-token transfer amount-b tx-sender .street-rewards none))
-        (try! (as-contract (update-rewards-b amount-b)))
+        (try! (contract-call? .street-token transfer amount-b contract-caller .street-rewards none))
+        (try! (as-contract? ()
+          (try! (update-rewards-b amount-b))))
       )
         true
       )
@@ -247,7 +254,7 @@
 
 (define-public (increase-rewards (user principal) (amount uint))
   (let (
-    (balance (unwrap-panic (contract-call? .credit-token get-balance user)))
+    (balance (unwrap! (contract-call? .credit-token get-balance user) ERR_BALANCE))
     (block stacks-block-height)
     (global-a (var-get global-index-a))
     (global-b (var-get global-index-b))
@@ -260,7 +267,7 @@
       (asserts! (> amount u0) ERR_ZERO_AMOUNT)
       (if (is-some info)
         (let (
-          (data (unwrap-panic info))
+          (data (unwrap! info ERR_NO_USER_STATE))
           (debt-a (get debt-a data))
           (debt-b (get debt-b data))
           (index-a (get index-a data))
@@ -321,7 +328,7 @@
 
 (define-public (set-contract-owner (new-owner principal))
   (begin
-    (asserts! (is-eq tx-sender (var-get contract-owner)) ERR_NOT_CONTRACT_OWNER)
+    (asserts! (is-eq contract-caller (var-get contract-owner)) ERR_NOT_CONTRACT_OWNER)
     (var-set contract-owner new-owner)
     (ok true)
   )
@@ -329,7 +336,7 @@
 
 (define-public (update-rewards-a (amount uint))
   (let (
-      (total-lp (unwrap-panic (contract-call? .credit-token get-total-supply)))
+      (total-lp (unwrap! (contract-call? .credit-token get-total-supply) ERR_SUPPLY))
       (current-index (var-get global-index-a))
       (index-increment (if (> total-lp u0)
         (/ (* amount PRECISION) total-lp)
@@ -351,7 +358,7 @@
 
 (define-public (update-rewards-b (amount uint))
   (let (
-      (total-lp (unwrap-panic (contract-call? .credit-token get-total-supply)))
+      (total-lp (unwrap! (contract-call? .credit-token get-total-supply) ERR_SUPPLY))
       (current-index (var-get global-index-b))
       (index-increment (if (> total-lp u0)
         (/ (* amount PRECISION) total-lp)
@@ -376,12 +383,18 @@
     (amount uint)
     (recipient principal)
   )
-  (as-contract (contract-call? token transfer amount tx-sender recipient none))
+  (as-contract? ((with-ft (contract-of token) "*" amount))
+    (try! (contract-call? token transfer amount tx-sender recipient none))
+  )
 )
 
 ;; custom read only
+(define-read-only (is-sip010 (token <sip-010>))
+  (ok (is-eq token token))
+)
+
 (define-read-only (get-cleanup-rewards)
-  (ok (calculate-cleanup-rewards))
+  (calculate-cleanup-rewards)
 )
 
 (define-read-only (get-contract-owner)
@@ -391,14 +404,14 @@
     (ok {
       global-index-a: (var-get global-index-a),
       global-index-b: (var-get global-index-b),
-      rewards-a: (unwrap-panic (contract-call? .welshcorgicoin get-balance .street-rewards)),
-      rewards-b: (unwrap-panic (contract-call? .street-token get-balance .street-rewards)),
+      rewards-a: (unwrap! (contract-call? .welshcorgicoin get-balance .street-rewards) ERR_BALANCE),
+      rewards-b: (unwrap! (contract-call? .street-token get-balance .street-rewards) ERR_BALANCE),
     })
 )
 
 (define-read-only (get-reward-user-info (user principal))
   (let (
-    (balance (unwrap-panic (contract-call? .credit-token get-balance user)))
+    (balance (unwrap! (contract-call? .credit-token get-balance user) ERR_BALANCE))
     (info (default-to {
       balance: u0,
       block: u0,

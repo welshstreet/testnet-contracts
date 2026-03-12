@@ -1,6 +1,6 @@
 (define-constant ERR-UNAUTHORIZED u1)
 (define-fungible-token welshcorgicoin)
-(define-data-var token-uri (optional (string-utf8 256)) (some u"https://gateway.lighthouse.storage/ipfs/bafybeidzkpzekf4gx3hlxqjqjkb3xmn2yrp2fcsqukexs4job57e5jwi7a/welsh.json"))
+(define-data-var token-uri (optional (string-utf8 256)) (some u"https://ipfs.io/ipfs/bafybeidds4mp7oppb6wepmecj5uwn2535eali4fizzw7lorrm55zi6b2bq/welsh.json"))
 (define-constant contract-creator tx-sender)
 (impl-trait 'SP3FBR2AGK5H9QBDH3EEN6DF8EK8JY7RX8QJ5SVTE.sip-010-trait-ft-standard.sip-010-trait)
 
@@ -13,7 +13,9 @@
 
         ;;(print { from: from, tx-sender: tx-sender, to: to, amount: amount })
 
-        (ft-transfer? welshcorgicoin amount from to)
+        (try! (ft-transfer? welshcorgicoin amount from to))
+        (match memo content (print content) 0x)
+        (ok true)
     )
 )
 
