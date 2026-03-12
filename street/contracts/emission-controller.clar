@@ -40,7 +40,6 @@
   )
 )
 
-;; read-only functions
 (define-read-only (get-current-epoch)
   (ok (var-get current-epoch)))
 

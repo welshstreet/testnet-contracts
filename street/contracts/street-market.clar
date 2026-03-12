@@ -22,7 +22,6 @@
 (define-data-var reserve-a uint u0)
 (define-data-var reserve-b uint u0)
 
-;; exchange functions 
 (define-public (burn-liquidity (amount uint))
   (begin
     (asserts! (> amount u0) ERR_ZERO_AMOUNT)
@@ -278,11 +277,6 @@
   (as-contract? ((with-ft (contract-of token) "*" amount))
     (try! (contract-call? token transfer amount tx-sender recipient none))
   )
-)
-
-;; custom read-only
-(define-read-only (is-sip010 (token <sip-010>))
-  (ok (is-eq token token))
 )
 
 (define-read-only (get-blocks)

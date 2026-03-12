@@ -388,14 +388,8 @@
   )
 )
 
-;; custom read only
-(define-read-only (is-sip010 (token <sip-010>))
-  (ok (is-eq token token))
-)
-
 (define-read-only (get-cleanup-rewards)
-  (calculate-cleanup-rewards)
-)
+  (calculate-cleanup-rewards))
 
 (define-read-only (get-contract-owner)
   (ok (var-get contract-owner)))

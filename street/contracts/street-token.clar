@@ -64,11 +64,9 @@
   )
 )
 
-;; custom read-only
 (define-read-only (get-contract-owner)
   (ok (var-get contract-owner)))
 
-;; standard read-only
 (define-read-only (get-balance (who principal))
   (ok (ft-get-balance street who)))
 
@@ -86,7 +84,6 @@
 
 (define-read-only (get-total-supply)
   (ok (ft-get-supply street)))
-
 
 ;; The Great Welsh $STREET TGE
 

@@ -12,7 +12,7 @@
 
 ;; variables
 (define-data-var contract-owner principal tx-sender)
-(define-data-var cooldown uint u1)
+(define-data-var cooldown uint u10)
 
 (define-map last-request
   { user: principal }
@@ -66,15 +66,6 @@
   )
 )
 
-;; custom read-only
-(define-read-only (is-sip010 (token <sip-010>))
-  (ok (is-eq token token))
-)
-
-(define-read-only (get-amount)
-  (ok AMOUNT)
-)
-
 (define-read-only (get-balance)
   (as-contract? ()
     (unwrap! (contract-call? .welshcorgicoin get-balance tx-sender) ERR_BALANCE_)
@@ -82,12 +73,10 @@
 )
 
 (define-read-only (get-cooldown)
-  (ok (var-get cooldown))
-)
+  (ok (var-get cooldown)))
 
 (define-read-only (get-last-request (user principal))
-  (ok (map-get? last-request { user: user }))
-)
+  (ok (map-get? last-request { user: user })))
 
 (define-read-only (get-next-request (user principal))
   (match (map-get? last-request { user: user })
