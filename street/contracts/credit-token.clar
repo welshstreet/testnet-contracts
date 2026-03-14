@@ -5,9 +5,9 @@
 (define-fungible-token credit)
 
 ;; errors
-(define-constant ERR_ZERO_AMOUNT        (err u921))
+(define-constant ERR_ZERO_AMOUNT (err u921))
 (define-constant ERR_NOT_CONTRACT_OWNER (err u922))
-(define-constant ERR_NOT_AUTHORIZED     (err u923))
+(define-constant ERR_NOT_AUTHORIZED (err u923))
 
 ;; constants
 (define-constant TOKEN_DECIMALS u6)

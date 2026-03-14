@@ -5,10 +5,10 @@
 (define-fungible-token street)
 
 ;; errors
-(define-constant ERR_ZERO_AMOUNT        (err u961))
+(define-constant ERR_ZERO_AMOUNT (err u961))
 (define-constant ERR_NOT_CONTRACT_OWNER (err u962))
-(define-constant ERR_NOT_TOKEN_OWNER    (err u963))
-(define-constant ERR_NOT_AUTHORIZED     (err u964))
+(define-constant ERR_NOT_TOKEN_OWNER (err u963))
+(define-constant ERR_NOT_AUTHORIZED (err u964))
 
 ;; constants
 (define-constant TOKEN_DECIMALS u6)

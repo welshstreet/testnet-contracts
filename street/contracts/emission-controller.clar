@@ -2,10 +2,10 @@
 
 ;; errors
 (define-constant ERR_EMISSION_INTERVAL (err u931))
-(define-constant ERR_NOT_ELIGIBLE      (err u932))
-(define-constant ERR_NO_LIQUIDITY      (err u933))
-(define-constant ERR_BALANCE           (err u934))
-(define-constant ERR_SUPPLY            (err u935))
+(define-constant ERR_NOT_ELIGIBLE (err u932))
+(define-constant ERR_NO_LIQUIDITY (err u933))
+(define-constant ERR_BALANCE (err u934))
+(define-constant ERR_SUPPLY (err u935))
 
 ;; constants
 (define-constant AMOUNT u10000000000)

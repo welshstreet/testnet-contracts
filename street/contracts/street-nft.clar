@@ -3,15 +3,12 @@
 (define-non-fungible-token welsh-street-genesis-nft uint)
 
 ;; errors
-(define-constant ERR_NOT_CONTRACT_OWNER  (err u991))
-(define-constant ERR_NOT_AUTHORIZED      (err u992))
-(define-constant ERR_NOT_FOUND           (err u993))
-(define-constant ERR_NOT_OWNER           (err u994))
-(define-constant ERR_MINT_CAP            (err u995))
-(define-constant ERR_MAX_TOKENS          (err u996))
-
-;; constants
-(define-constant MINT_CAP u21000)
+(define-constant ERR_NOT_CONTRACT_OWNER (err u991))
+(define-constant ERR_NOT_AUTHORIZED (err u992))
+(define-constant ERR_NOT_FOUND (err u993))
+(define-constant ERR_NOT_OWNER (err u994))
+(define-constant ERR_MINT_CAP (err u995))
+(define-constant ERR_MAX_TOKENS (err u996))
 
 ;; variables
 (define-data-var base-uri (string-ascii 256) "https://ipfs.io/ipfs/bafybeifgnlibngkzvd6nfryu57kf54logbj5dbbcvmznc45hv47pkxzjli/")
@@ -23,7 +20,6 @@
   (let ((existing-tokens (default-to (list) (map-get? users recipient))))
     (begin
       (asserts! (is-eq contract-caller .street-controller) ERR_NOT_AUTHORIZED)
-      (asserts! (<= token-id MINT_CAP) ERR_MINT_CAP)
       (try! (nft-mint? welsh-street-genesis-nft token-id recipient))
       (map-set users recipient (unwrap! (as-max-len? (append existing-tokens token-id) u2) ERR_MAX_TOKENS))
       (ok true)

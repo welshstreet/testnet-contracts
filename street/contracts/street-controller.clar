@@ -2,18 +2,18 @@
 
 ;; errors
 (define-constant ERR_NOT_CONTRACT_OWNER (err u981))
-(define-constant ERR_ALREADY_MINTED     (err u982))
-(define-constant ERR_MINT_CAP           (err u983))
-(define-constant ERR_NO_LIQUIDITY       (err u984))
-(define-constant ERR_BALANCE            (err u985))
-(define-constant ERR_SUPPLY             (err u986))
-(define-constant ERR_YOU_POOR           (err u2))
+(define-constant ERR_ALREADY_MINTED (err u982))
+(define-constant ERR_MINT_CAP (err u983))
+(define-constant ERR_NO_LIQUIDITY (err u984))
+(define-constant ERR_BALANCE (err u985))
+(define-constant ERR_SUPPLY (err u986))
+(define-constant ERR_YOU_POOR (err u2))
 
 ;; constants
 (define-constant MINT_BONUS u1000000000000)
-(define-constant MINT_STREET    u100000000000)
-(define-constant DONATE_WELSH   u1000000000)
-(define-constant MINT_CAP            u21000)
+(define-constant MINT_STREET u100000000000)
+(define-constant DONATE_WELSH u1000000000)
+(define-constant MINT_CAP u21000)
 
 ;; variables
 (define-data-var mint-count uint u0)

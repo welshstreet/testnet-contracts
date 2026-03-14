@@ -4,8 +4,8 @@
 
 ;; errors
 (define-constant ERR_NOT_CONTRACT_OWNER (err u971))
-(define-constant ERR_BALANCE           (err u972))
-(define-constant ERR_COOLDOWN           (err u973))
+(define-constant ERR_BALANCE (err u972))
+(define-constant ERR_COOLDOWN (err u973))
 
 ;; constants
 (define-constant AMOUNT u1000000000000)

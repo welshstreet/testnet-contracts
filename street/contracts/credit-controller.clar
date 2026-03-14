@@ -1,10 +1,10 @@
 ;; Welsh Street Credit Controller
 
 ;; errors
-(define-constant ERR_ZERO_AMOUNT        (err u911))
+(define-constant ERR_ZERO_AMOUNT (err u911))
 (define-constant ERR_NOT_CONTRACT_OWNER (err u912))
-(define-constant ERR_NOT_TOKEN_OWNER    (err u913))
-(define-constant ERR_BALANCE            (err u914))
+(define-constant ERR_NOT_TOKEN_OWNER (err u913))
+(define-constant ERR_BALANCE (err u914))
 
 ;; variables
 (define-data-var contract-owner principal tx-sender)
