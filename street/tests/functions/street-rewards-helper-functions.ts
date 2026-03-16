@@ -55,9 +55,9 @@ export function cleanupRewards(
     );
 
     if (sender != deployer) {
-        expect(test.result).toEqual(Cl.error(Cl.uint(901)));
+        expect(test.result).toEqual(Cl.error(Cl.uint(972)));
         if (disp) {
-            console.log(`☑️ Not contract owner: Expected ERR_NOT_CONTRACT_OWNER (801) - cleanup-rewards result:`, test.result);
+            console.log(`☑️ Not contract owner: Expected ERR_NOT_CONTRACT_OWNER (972) - cleanup-rewards result:`, test.result);
         }
         return false;
     }
@@ -148,10 +148,10 @@ export function emissionRewards(
 
     if (test.result.type === 'err') {
         const errorCode = Number((test.result as any).value.value);
-        if (errorCode === 953) {
-            expect(test.result).toEqual(Cl.error(Cl.uint(953)));
+        if (errorCode === 973) {
+            expect(test.result).toEqual(Cl.error(Cl.uint(973)));
             if (disp) {
-                console.log(`☑️ Not authorized: Expected ERR_NOT_AUTHORIZED (953) - emission-rewards result:`, test.result);
+                console.log(`☑️ Not authorized: Expected ERR_NOT_AUTHORIZED (973) - emission-rewards result:`, test.result);
             }
             return false;
         }
@@ -196,18 +196,18 @@ export function updateRewardsA(
     if (test.result.type === 'err') {
         const errorCode = Number((test.result as any).value.value);
         
-        if (errorCode === 803) {
+        if (errorCode === 973) {
             // ERR_NOT_AUTHORIZED - authorization check happens first
-            expect(test.result).toEqual(Cl.error(Cl.uint(903)));
+            expect(test.result).toEqual(Cl.error(Cl.uint(973)));
             if (disp) {
-                console.log(`☑️ Not authorized: Expected ERR_NOT_AUTHORIZED (803) - update-rewards-a result:`, test.result);
+                console.log(`☑️ Not authorized: Expected ERR_NOT_AUTHORIZED (973) - update-rewards-a result:`, test.result);
             }
             return false;
-        } else if (errorCode === 800) {
+        } else if (errorCode === 971) {
             // ERR_ZERO_AMOUNT - only possible if caller is authorized but amount is 0
-            expect(test.result).toEqual(Cl.error(Cl.uint(900)));
+            expect(test.result).toEqual(Cl.error(Cl.uint(971)));
             if (disp) {
-                console.log(`☑️ Zero amount: Expected ERR_ZERO_AMOUNT (800) - update-rewards-a result:`, test.result);
+                console.log(`☑️ Zero amount: Expected ERR_ZERO_AMOUNT (971) - update-rewards-a result:`, test.result);
             }
             return false;
         } else {
@@ -255,18 +255,18 @@ export function updateRewardsB(
     if (test.result.type === 'err') {
         const errorCode = Number((test.result as any).value.value);
         
-        if (errorCode === 803) {
+        if (errorCode === 973) {
             // ERR_NOT_AUTHORIZED - authorization check happens first
-            expect(test.result).toEqual(Cl.error(Cl.uint(903)));
+            expect(test.result).toEqual(Cl.error(Cl.uint(973)));
             if (disp) {
-                console.log(`☑️ Not authorized: Expected ERR_NOT_AUTHORIZED (803) - update-rewards-b result:`, test.result);
+                console.log(`☑️ Not authorized: Expected ERR_NOT_AUTHORIZED (973) - update-rewards-b result:`, test.result);
             }
             return false;
-        } else if (errorCode === 800) {
+        } else if (errorCode === 971) {
             // ERR_ZERO_AMOUNT - only possible if caller is authorized but amount is 0
-            expect(test.result).toEqual(Cl.error(Cl.uint(900)));
+            expect(test.result).toEqual(Cl.error(Cl.uint(971)));
             if (disp) {
-                console.log(`☑️ Zero amount: Expected ERR_ZERO_AMOUNT (800) - update-rewards-b result:`, test.result);
+                console.log(`☑️ Zero amount: Expected ERR_ZERO_AMOUNT (971) - update-rewards-b result:`, test.result);
             }
             return false;
         } else {
@@ -284,63 +284,6 @@ export function updateRewardsB(
 
     if (disp && test.result.type === 'ok') {
         console.log(`✅ Update rewards B successful: ${amount}`);
-    }
-    return true;
-}
-
-export function updateUserRewards(
-    userPrincipal: string | { address: string; contractName: string },
-    sender: string | { address: string; contractName: string },
-    disp: boolean = false
-){
-    // Handle contract principal for userPrincipal parameter
-    let userArg;
-    if (typeof userPrincipal === 'string') {
-        userArg = Cl.principal(userPrincipal);
-    } else {
-        userArg = Cl.contractPrincipal(userPrincipal.address, userPrincipal.contractName);
-    }
-    
-    // Handle contract principal senders
-    let actualSender: string;
-    if (typeof sender === 'object' && sender.address && sender.contractName) {
-        // Contract principal
-        actualSender = `${sender.address}.${sender.contractName}`;
-    } else {
-        // Regular principal
-        actualSender = sender as string;
-    }
-    
-    const test = simnet.callPublicFn(
-        "street-rewards",
-        "update-user-rewards",
-        [userArg],
-        actualSender
-    );
-
-    // Check if caller is not exchange contract (will fail authorization)
-    if (test.result.type === 'err') {
-        const errorCode = Number((test.result as any).value.value);
-        if (errorCode === 803) {
-            expect(test.result).toEqual(Cl.error(Cl.uint(903)));
-            if (disp) {
-                console.log(`☑️ Not authorized: Expected ERR_NOT_AUTHORIZED (803) - update-user-rewards result:`, test.result);
-            }
-            return false;
-        } else {
-            if (disp) {
-                console.log(`☑️ Update user rewards failed with error: ${errorCode}`);
-            }
-            expect(test.result).toEqual(Cl.error(Cl.uint(errorCode)));
-            return false;
-        }
-    }
-
-    expect(test.result).toEqual(Cl.ok(Cl.bool(true)));
-
-    if (disp && test.result.type === 'ok') {
-        const displayName = typeof userPrincipal === 'string' ? userPrincipal : `${userPrincipal.address}.${userPrincipal.contractName}`;
-        console.log(`✅ Update user rewards successful for user: ${displayName}`);
     }
     return true;
 }

@@ -4,13 +4,10 @@ import { setupInitialLiquidity } from "./functions/setup-initial-liquidity-helpe
 import { getTokenBalances } from "./functions/utility-helper-functions";
 import { disp } from './vitestconfig';
 
-const accounts = simnet.getAccounts();
-const deployerAddress = accounts.get("deployer")!;
-
 describe("=== SETUP USER DEPLOYER TESTS ===", () => {
     it("=== SETUP USER DEPLOYER PASS ===", () => {
         // STEP 1: Setup initial liquidity (required for mint to work)
-        let { marketData, rewardData, supplyData, userData } = setupInitialLiquidity(disp);
+        let { rewardData, userData } = setupInitialLiquidity(disp);
 
         // STEP 2: Call setupUserDeployer to mint STREET tokens
         // STEP 2: Call setupUserDeployer to mint STREET tokens

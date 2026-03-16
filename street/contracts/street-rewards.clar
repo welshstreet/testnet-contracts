@@ -3,15 +3,11 @@
 (use-trait sip-010 'SP3FBR2AGK5H9QBDH3EEN6DF8EK8JY7RX8QJ5SVTE.sip-010-trait-ft-standard.sip-010-trait)
 
 ;; errors
-(define-constant ERR_ZERO_AMOUNT (err u951))
-(define-constant ERR_NOT_CONTRACT_OWNER (err u952))
-(define-constant ERR_NOT_AUTHORIZED (err u953))
-(define-constant ERR_NO_USER_STATE (err u954))
-(define-constant ERR_CLEANUP_INTERVAL (err u955))
-(define-constant ERR_CLEANUP_DATA (err u956))
-(define-constant ERR_BALANCE (err u957))
-(define-constant ERR_SUPPLY (err u958))
-
+(define-constant ERR_ZERO_AMOUNT (err u971))
+(define-constant ERR_NOT_CONTRACT_OWNER (err u972))
+(define-constant ERR_NOT_AUTHORIZED (err u973))
+(define-constant ERR_CLEANUP_INTERVAL (err u975))
+ 
 ;; constants
 (define-constant PRECISION u1000000000)
 (define-constant CLEANUP_INTERVAL u144)
@@ -40,7 +36,7 @@
 
 (define-public (claim-rewards)
   (let (
-    (balance (unwrap! (contract-call? .credit-token get-balance contract-caller) ERR_BALANCE))
+    (balance (unwrap-panic (contract-call? .credit-token get-balance contract-caller)))
     (info (default-to {
       balance: u0,
       block: u0,
@@ -89,8 +85,8 @@
 
 (define-private (calculate-cleanup-rewards)
   (let (
-    (actual-a (unwrap! (contract-call? .welshcorgicoin get-balance .street-rewards) ERR_BALANCE))
-    (actual-b (unwrap! (contract-call? .street-token get-balance .street-rewards) ERR_BALANCE))
+    (actual-a (unwrap-panic (contract-call? .welshcorgicoin get-balance .street-rewards)))
+    (actual-b (unwrap-panic (contract-call? .street-token get-balance .street-rewards)))
     (claimed-a (var-get total-claimed-a))
     (claimed-b (var-get total-claimed-b))
     (distributed-a (var-get total-distributed-a))
@@ -128,7 +124,7 @@
 
 (define-public (cleanup-rewards)
   (let (
-    (cleanup-data (unwrap! (calculate-cleanup-rewards) ERR_CLEANUP_DATA))
+    (cleanup-data (unwrap-panic (calculate-cleanup-rewards)))
     (cleanup-a (get cleanup-a cleanup-data))
     (cleanup-b (get cleanup-b cleanup-data))
     (last-cleanup (var-get last-cleanup-block))
@@ -155,12 +151,12 @@
 
 (define-public (decrease-rewards (user principal) (amount uint))
   (let (
-    (balance (unwrap! (contract-call? .credit-token get-balance user) ERR_BALANCE))
+    (balance (unwrap-panic (contract-call? .credit-token get-balance user)))
     (block stacks-block-height)
     (global-a (var-get global-index-a))
     (global-b (var-get global-index-b))
-    (info (unwrap! (map-get? users { account: user }) ERR_NO_USER_STATE))
-    (total-lp (unwrap! (contract-call? .credit-token get-total-supply) ERR_SUPPLY))
+    (info (unwrap-panic (map-get? users { account: user })))
+    (total-lp (unwrap-panic (contract-call? .credit-token get-total-supply)))
     (old-balance (+ balance amount))
     (other-lp (- total-lp old-balance))
   )
@@ -254,7 +250,7 @@
 
 (define-public (increase-rewards (user principal) (amount uint))
   (let (
-    (balance (unwrap! (contract-call? .credit-token get-balance user) ERR_BALANCE))
+    (balance (unwrap-panic (contract-call? .credit-token get-balance user)))
     (block stacks-block-height)
     (global-a (var-get global-index-a))
     (global-b (var-get global-index-b))
@@ -267,7 +263,7 @@
       (asserts! (> amount u0) ERR_ZERO_AMOUNT)
       (if (is-some info)
         (let (
-          (data (unwrap! info ERR_NO_USER_STATE))
+          (data (unwrap-panic info))
           (debt-a (get debt-a data))
           (debt-b (get debt-b data))
           (index-a (get index-a data))
@@ -336,7 +332,7 @@
 
 (define-public (update-rewards-a (amount uint))
   (let (
-      (total-lp (unwrap! (contract-call? .credit-token get-total-supply) ERR_SUPPLY))
+  (total-lp (unwrap-panic (contract-call? .credit-token get-total-supply)))
       (current-index (var-get global-index-a))
       (index-increment (if (> total-lp u0)
         (/ (* amount PRECISION) total-lp)
@@ -358,7 +354,7 @@
 
 (define-public (update-rewards-b (amount uint))
   (let (
-      (total-lp (unwrap! (contract-call? .credit-token get-total-supply) ERR_SUPPLY))
+  (total-lp (unwrap-panic (contract-call? .credit-token get-total-supply)))
       (current-index (var-get global-index-b))
       (index-increment (if (> total-lp u0)
         (/ (* amount PRECISION) total-lp)
@@ -398,14 +394,14 @@
     (ok {
       global-index-a: (var-get global-index-a),
       global-index-b: (var-get global-index-b),
-      rewards-a: (unwrap! (contract-call? .welshcorgicoin get-balance .street-rewards) ERR_BALANCE),
-      rewards-b: (unwrap! (contract-call? .street-token get-balance .street-rewards) ERR_BALANCE),
+  rewards-a: (unwrap-panic (contract-call? .welshcorgicoin get-balance .street-rewards)),
+  rewards-b: (unwrap-panic (contract-call? .street-token get-balance .street-rewards)),
     })
 )
 
 (define-read-only (get-reward-user-info (user principal))
   (let (
-    (balance (unwrap! (contract-call? .credit-token get-balance user) ERR_BALANCE))
+    (balance (unwrap-panic (contract-call? .credit-token get-balance user)))
     (info (default-to {
       balance: u0,
       block: u0,

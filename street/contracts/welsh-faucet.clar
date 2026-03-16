@@ -3,9 +3,8 @@
 (use-trait sip-010 'SP3FBR2AGK5H9QBDH3EEN6DF8EK8JY7RX8QJ5SVTE.sip-010-trait-ft-standard.sip-010-trait)
 
 ;; errors
-(define-constant ERR_NOT_CONTRACT_OWNER (err u971))
-(define-constant ERR_BALANCE (err u972))
-(define-constant ERR_COOLDOWN (err u973))
+(define-constant ERR_NOT_CONTRACT_OWNER (err u991))
+(define-constant ERR_COOLDOWN (err u992))
 
 ;; constants
 (define-constant AMOUNT u1000000000000)
@@ -42,7 +41,7 @@
 
 (define-public (set-contract-owner (new-owner principal))
   (begin
-    (asserts! (is-eq tx-sender (var-get contract-owner)) ERR_NOT_CONTRACT_OWNER)
+    (asserts! (is-eq contract-caller (var-get contract-owner)) ERR_NOT_CONTRACT_OWNER)
     (var-set contract-owner new-owner)
     (ok true)
   )
@@ -50,7 +49,7 @@
 
 (define-public (set-cooldown (blocks uint))
   (begin
-    (asserts! (is-eq tx-sender (var-get contract-owner)) ERR_NOT_CONTRACT_OWNER)
+    (asserts! (is-eq contract-caller (var-get contract-owner)) ERR_NOT_CONTRACT_OWNER)
     (var-set cooldown blocks)
     (ok { cooldown: blocks })
   )
@@ -68,9 +67,12 @@
 
 (define-read-only (get-balance)
   (as-contract? ()
-    (unwrap! (contract-call? .welshcorgicoin get-balance tx-sender) ERR_BALANCE)
+    (unwrap-panic (contract-call? .welshcorgicoin get-balance tx-sender))
   )
 )
+
+(define-read-only (get-contract-owner)
+  (ok (var-get contract-owner)))
 
 (define-read-only (get-cooldown)
   (ok (var-get cooldown)))
@@ -116,3 +118,4 @@
     )
   )
 )
+

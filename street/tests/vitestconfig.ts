@@ -14,6 +14,9 @@ export const EMISSION_REWARD =  9_900_000_000; // 9,900 natural units
 export const EMISSION_BOUNTY =    100_000_000; //   100 natural units
 export const EMISSION_EPOCH = 0;
 
+export const FAUCET_SETUP = 1_000_000_000_000_000 // 1 billion natural units;
+export const FAUCET_REQUEST = 1_000_000_000_000
+
 export const INITIAL_PROVIDE_WELSH = 10_000_000_000_000; // 10,000,000 natural units
 export const INITIAL_PROVIDE_STREET = INITIAL_PROVIDE_WELSH * RATIO; // 1,000,000,000 natural units
 export const INITIAL_CREDIT = 0;
@@ -24,6 +27,9 @@ export const REINITIALIZE_PROVIDE_STREET = REINITIALIZE_PROVIDE_WELSH * RATIO;
 export const LOCK_WELSH =    1_000_000_000; // 1,000 natural units
 export const PROVIDE_WELSH =   100_000_000; //   100 natural units
 export const PROVIDE_STREET = PROVIDE_WELSH * RATIO; // 100,000,000 natural units
+
+export const PROVIDE_INCREASE_WELSH = 1_000_000_000_000; //   100 natural units
+export const REMOVE_CREDIT = 100_000_000; //   100 natural units
 
 export const SWAP_WELSH = 100_000_000 // 100 natural units
 export const SWAP_STREET = SWAP_WELSH * RATIO;

@@ -9,7 +9,7 @@ const deployer = accounts.get("deployer")!;
 describe("=== DONATE REWARDS TESTS ===", () => {
     it("=== DONATE REWARDS BUG TEST ===", () => {
         // STEP 1: Setup liquidity and user state
-        const { marketData, rewardData, supplyData, userData } = setupLiquidityUsers(disp);
+        const { rewardData, supplyData, userData } = setupLiquidityUsers(disp);
 
         // STEP 2: Check initial reward pool state (has WELSH from setup mints)
         let globalIndexA = rewardData.globalIndexA;

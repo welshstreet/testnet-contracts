@@ -1,7 +1,8 @@
 import { describe, it } from "vitest";
 import { disp, TRANSFER_CREDIT } from "./vitestconfig";
 import { setupLiquidityUsers } from "./functions/setup-liquidity-users-helper-function";
-import { transferCredit, setContractOwner } from "./functions/credit-controller-helper-functions";
+import { transferCredit } from "./functions/credit-controller-helper-functions";
+import { setContractOwner } from "./functions/shared-set-helper-functions";
 
 const accounts = simnet.getAccounts();
 const wallet1 = accounts.get("wallet_1")!;
@@ -47,6 +48,6 @@ describe("=== CREDIT CONTROLLER ERROR TESTS ===", () => {
     it("=== CREDIT CONTROLLER FAIL - NOT CONTRACT OWNER ===", () => {
         // STEP 1: wallet1 (not the contract owner) tries to set a new contract owner
         // This should fail with ERR_NOT_CONTRACT_OWNER (912)
-        setContractOwner(wallet2, wallet1, disp);
+        setContractOwner('credit-controller', wallet2, wallet1, disp);
     });
 });

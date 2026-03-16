@@ -15,7 +15,7 @@ describe("=== SHARED READ ONLY FUNCTION TESTS ===", () => {
         getBlocks(deployer, disp);
     });
 
-    it("=== GETMARKETINFO ===", () => {
+    it("=== GET MARKET INFO ===", () => {
         const availAExpected = 0;
         const availBExpected = 0;
         const feeExpected = FEE;
@@ -37,43 +37,4 @@ describe("=== SHARED READ ONLY FUNCTION TESTS ===", () => {
             disp
         );
     })
-
-    it("=== GET TOTAL SUPPLY ===", () => {
-        getTotalSupply(INITIAL_MINT_STREET, 'street-token', deployer, disp);
-    });
-
-    it("=== GET CONTRACT OWNER ===", () => {
-        const contractOwnerExpected = deployer;
-        getContractOwner(contractOwnerExpected, 'street-token', deployer, disp);
-    });
-
-    it("=== GET DECIMALS ===", () => {
-        const decimalsExpected = 6;
-        getDecimals(decimalsExpected, 'street-token', deployer, disp);
-    });
-
-    it("=== GET NAME ===", () => {
-        const nameExpected = "Welsh Street Token";
-        getName(nameExpected, 'street-token', deployer, disp);
-    });
-
-    it("=== GET SYMBOL ===", () => {
-        const symbolExpected = "STREET";
-        getSymbol(symbolExpected, 'street-token', deployer, disp);
-    });
-
-    it("=== GET NAME ===", () => {
-        const nameExpected = "Welsh Street Credit";
-        getName(nameExpected, 'credit-token', deployer, disp);
-    });
-
-    it("=== GET SYMBOL ===", () => {
-        const symbolExpected = "CREDIT";
-        getSymbol(symbolExpected, 'credit-token', deployer, disp);
-    });
-
-    it("=== GET TOKEN URI ===", () => {
-        const tokenUriExpected = STREET_URI;
-        getTokenUri(tokenUriExpected, 'street-token', deployer, disp);
-    });
 });

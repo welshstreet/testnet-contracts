@@ -21,8 +21,8 @@ describe("=== STREET NFT MINT AUTH TESTS ===", () => {
             deployer
         );
         
-        // Should fail with ERR_NOT_AUTHORIZED (992)
-        expect(test.result).toEqual(Cl.error(Cl.uint(992)));
+        // Should fail with ERR_NOT_AUTHORIZED (962)
+        expect(test.result).toEqual(Cl.error(Cl.uint(962)));
         
         if (disp) {
             console.log(`☑️ NFT mint correctly rejected - Only street-controller can mint`);

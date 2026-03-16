@@ -35,9 +35,12 @@ export function emissionMint(
           errorMsg = 'ERR_EMISSION_INTERVAL';
           break;
         case 932:
-          errorMsg = 'ERR_NOT_ELIGIBLE';
+          errorMsg = 'ERR_NOT_CONTRACT_OWNER';
           break;
         case 933:
+          errorMsg = 'ERR_NOT_ELIGIBLE';
+          break;
+        case 934:
           errorMsg = 'ERR_NO_LIQUIDITY';
           break;
         default:

@@ -35,13 +35,13 @@ export function streetMint(
                 case 2:
                     errorMsg = 'ERR_YOU_POOR';
                     break;
-                case 982:
+                case 941:
                     errorMsg = 'ERR_ALREADY_MINTED';
                     break;
-                case 983:
+                case 943:
                     errorMsg = 'ERR_MINT_CAP_EXCEEDED';
                     break;
-                case 984:
+                case 944:
                     errorMsg = 'ERR_NO_LIQUIDITY';
                     break;
                 default:
@@ -74,88 +74,6 @@ export function streetMint(
     }
     
     return { amountA: amountAExpected, amountB: amountBExpected, block: blockExpected, count: countExpected };
-}
-
-export function getContractOwner(
-    disp: boolean = false
-) {
-    if (disp) {
-        console.log(`\n=== getContractOwner ===`);
-    }
-    
-    const test = simnet.callReadOnlyFn(
-        "street-controller",
-        "get-contract-owner",
-        [],
-        simnet.deployer
-    );
-    
-    if (disp) {
-        console.log(`Result type: ${test.result.type}`);
-    }
-    
-    // Success case - expect (ok principal)
-    expect(test.result.type).toEqual('ok');
-    
-    const owner = (test.result as any).value.value;
-    
-    if (disp) {
-        console.log(`✅ Contract owner: ${owner}`);
-    }
-    
-    return owner;
-}
-
-export function setContractOwner(
-    newOwner: string,
-    caller: any,
-    disp: boolean = false
-) {
-    if (disp) {
-        console.log(`\n=== setContractOwner ===`);
-        console.log(`New owner: ${newOwner}`);
-        console.log(`Caller: ${caller}`);
-    }
-    
-    const test = simnet.callPublicFn(
-        "street-controller",
-        "set-contract-owner",
-        [Cl.principal(newOwner)],
-        caller
-    );
-    
-    if (disp) {
-        console.log(`Result type: ${test.result.type}`);
-    }
-    
-    // Check for errors
-    if (test.result.type === 'err') {
-        const errorCode = Number((test.result as any).value.value);
-        
-        if (disp) {
-            let errorMsg = '';
-            switch(errorCode) {
-                case 981:
-                    errorMsg = 'ERR_NOT_CONTRACT_OWNER';
-                    break;
-                default:
-                    errorMsg = `Unknown error: ${errorCode}`;
-            }
-            console.log(`☑️ Set contract owner failed: ${errorMsg}`);
-        }
-        
-        expect(test.result).toEqual(Cl.error(Cl.uint(errorCode)));
-        return false;
-    }
-    
-    // Success case - expect (ok true)
-    expect(test.result).toEqual(Cl.ok(Cl.bool(true)));
-    
-    if (disp && test.result.type === 'ok') {
-        console.log(`✅ Contract owner set to: ${newOwner}`);
-    }
-    
-    return true;
 }
 
 export function getMintCount(

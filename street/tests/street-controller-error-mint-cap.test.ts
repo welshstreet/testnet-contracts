@@ -7,8 +7,8 @@ import { setupInitialLiquidity } from "./functions/setup-initial-liquidity-helpe
 
 const accounts = simnet.getAccounts();
 const deployer = accounts.get("deployer")!;
-const wallet1 = accounts.get("wallet_1")!
-const wallet2 = accounts.get("wallet_2")!
+const wallet1 = accounts.get("wallet_1")!;
+const wallet2 = accounts.get("wallet_2")!;
 
 describe("=== STREET CONTROLLER TESTS ===", () => {
     it("=== STREET CONTROLLER TEST - FAIL - MINT CAP ===", () => {

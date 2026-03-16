@@ -18,7 +18,7 @@ export function burnLiquidity(
         expect(test.result).toEqual(Cl.error(Cl.uint(errorCode)));
         if (disp) {
             switch (errorCode) {
-                case 941:
+                case 951:
                     console.log(`☑️ ERR_ZERO_AMOUNT`);
                     break;
                 default:
@@ -64,10 +64,10 @@ export function lockLiquidity(
         expect(test.result).toEqual(Cl.error(Cl.uint(errorCode)));
         if (disp) {
             switch (errorCode) {
-                case 941:
+                case 951:
                     console.log(`☑️ ERR_ZERO_AMOUNT`);
                     break;
-                case 943:
+                case 953:
                     console.log(`☑️ ERR_NOT_INITIALIZED`);
                     break;
                 default:
@@ -118,13 +118,13 @@ export function initialLiquidity(
         expect(test.result).toEqual(Cl.error(Cl.uint(errorCode)));
         if (disp) {
             switch (errorCode) {
-                case 941:
+                case 951:
                     console.log(`☑️ ERR_ZERO_AMOUNT`);
                     break;
-                case 942:
+                case 952:
                     console.log(`☑️ ERR_NOT_CONTRACT_OWNER`);
                     break;
-                case 944:
+                case 954:
                     console.log(`☑️ ERR_INITIALIZED`);
                     break;
                 default:
@@ -171,10 +171,10 @@ export function provideLiquidity(
         expect(test.result).toEqual(Cl.error(Cl.uint(errorCode)));
         if (disp) {
             switch (errorCode) {
-                case 941:
+                case 951:
                     console.log(`☑️ ERR_ZERO_AMOUNT`);
                     break;
-                case 943:
+                case 953:
                     console.log(`☑️ ERR_NOT_INITIALIZED`);
                     break;
                 default:
@@ -229,10 +229,10 @@ export function removeLiquidity(
         expect(test.result).toEqual(Cl.error(Cl.uint(errorCode)));
         if (disp) {
             switch (errorCode) {
-                case 941:
+                case 951:
                     console.log(`☑️ ERR_ZERO_AMOUNT`);
                     break;
-                case 943:
+                case 953:
                     console.log(`☑️ ERR_NOT_INITIALIZED`);
                     break;
                 default:

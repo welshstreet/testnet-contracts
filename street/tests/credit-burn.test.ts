@@ -1,6 +1,6 @@
 import { describe, it } from "vitest";
 import { disp, CREDIT_AMOUNT } from "./vitestconfig"
-import { creditBurn } from "./functions/credit-helper-functions";
+import { creditBurn } from "./functions/credit-token-helper-functions";
 
 const accounts = simnet.getAccounts();
 const deployer = accounts.get("deployer")!;

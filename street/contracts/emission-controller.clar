@@ -2,10 +2,9 @@
 
 ;; errors
 (define-constant ERR_EMISSION_INTERVAL (err u931))
-(define-constant ERR_NOT_ELIGIBLE (err u932))
-(define-constant ERR_NO_LIQUIDITY (err u933))
-(define-constant ERR_BALANCE (err u934))
-(define-constant ERR_SUPPLY (err u935))
+(define-constant ERR_NOT_CONTRACT_OWNER (err u932))
+(define-constant ERR_NOT_ELIGIBLE (err u933))
+(define-constant ERR_NO_LIQUIDITY (err u934))
 
 ;; constants
 (define-constant AMOUNT u10000000000)
@@ -14,13 +13,14 @@
 ;; variables
 (define-data-var current-epoch uint u0)
 (define-data-var last-burn-block uint u0)
+(define-data-var contract-owner principal tx-sender)
 
 (define-public (mint)
   (let (
       (last-mint (var-get last-burn-block))
       (blocks-elapsed (- burn-block-height last-mint))
-      (total-lp (unwrap! (contract-call? .credit-token get-total-supply) ERR_SUPPLY))
-      (caller-credit (unwrap! (contract-call? .credit-token get-balance contract-caller) ERR_BALANCE))
+      (total-lp (unwrap-panic (contract-call? .credit-token get-total-supply)))
+      (caller-credit (unwrap-panic (contract-call? .credit-token get-balance contract-caller)))
       (min-credit (/ total-lp THRESHOLD))
     )
     (begin
@@ -39,6 +39,17 @@
     )
   )
 )
+
+(define-public (set-contract-owner (new-owner principal))
+  (begin
+    (asserts! (is-eq contract-caller (var-get contract-owner)) ERR_NOT_CONTRACT_OWNER)
+    (var-set contract-owner new-owner)
+    (ok true)
+  )
+)
+
+(define-read-only (get-contract-owner)
+  (ok (var-get contract-owner)))
 
 (define-read-only (get-current-epoch)
   (ok (var-get current-epoch)))

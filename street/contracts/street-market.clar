@@ -3,12 +3,11 @@
 (use-trait sip-010 'SP3FBR2AGK5H9QBDH3EEN6DF8EK8JY7RX8QJ5SVTE.sip-010-trait-ft-standard.sip-010-trait)
 
 ;; errors
-(define-constant ERR_ZERO_AMOUNT (err u941))
-(define-constant ERR_NOT_CONTRACT_OWNER (err u942))
-(define-constant ERR_NOT_INITIALIZED (err u943))
-(define-constant ERR_INITIALIZED (err u944))
-(define-constant ERR_INVALID_AMOUNT (err u945))
-(define-constant ERR_SUPPLY (err u946))
+(define-constant ERR_ZERO_AMOUNT (err u951))
+(define-constant ERR_NOT_CONTRACT_OWNER (err u952))
+(define-constant ERR_NOT_INITIALIZED (err u953))
+(define-constant ERR_INITIALIZED (err u954))
+(define-constant ERR_INVALID_AMOUNT (err u955))
 
 ;; constants
 (define-constant BASIS u10000)
@@ -70,7 +69,7 @@
     (lock-b (var-get locked-b))
     (res-a (var-get reserve-a))
     (res-b (var-get reserve-b))
-    (total-lp (unwrap! (contract-call? .credit-token get-total-supply) ERR_SUPPLY))
+    (total-lp (unwrap-panic (contract-call? .credit-token get-total-supply)))
     (amount-lp (sqrti (* amount-a amount-b)))
   )
   (begin
@@ -104,7 +103,7 @@
     (res-b  (var-get reserve-b))
     (avail-a (if (>= res-a lock-a) (- res-a lock-a) u0))
     (avail-b (if (>= res-b lock-b) (- res-b lock-b) u0))
-    (total-lp (unwrap! (contract-call? .credit-token get-total-supply) ERR_SUPPLY))
+    (total-lp (unwrap-panic (contract-call? .credit-token get-total-supply)))
   )
     (begin
       (asserts! (> amount-a u0) ERR_ZERO_AMOUNT)
@@ -142,7 +141,7 @@
     (res-b (var-get reserve-b))
     (avail-a (if (>= res-a lock-a) (- res-a lock-a) u0))
     (avail-b (if (>= res-b lock-b) (- res-b lock-b) u0))
-    (total-lp (unwrap! (contract-call? .credit-token get-total-supply) ERR_SUPPLY))
+    (total-lp (unwrap-panic (contract-call? .credit-token get-total-supply)))
   )
     (begin
       (asserts! (> amount-lp u0) ERR_ZERO_AMOUNT)

@@ -1,5 +1,5 @@
 import { describe, it } from "vitest";
-import { disp } from "./vitestconfig"
+import { disp } from "./vitestconfig";
 import { getBlocks, getMarketInfo } from "./functions/street-market-helper-functions";
 import { FEE, TAX } from "./vitestconfig";
 

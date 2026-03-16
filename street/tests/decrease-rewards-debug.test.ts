@@ -121,7 +121,7 @@ describe("=== DECREASE REWARDS TESTS ===", () => {
             console.log(`Wallet2 LP: ${wallet2LpBalance}, STREET: ${wallet2StreetBalance}`);
         }
             
-        // STEP 3: Check initial reward pool state and cleanup rewards
+        // STEP 3: Read initial reward pool state using get-cleanup-rewards (read-only function to observe onchain tracking)
         // Note: Already has WELSH from setup mints (3 x DONATE_WELSH_TO_MINT), not empty
         // Tracking variables already declared in STEP 1, just verify them
         
@@ -251,7 +251,7 @@ describe("=== DECREASE REWARDS TESTS ===", () => {
         actualA = rewardsA;  // actualA should match the rewardsA balance in contract
         actualB = rewardsB;  // actualB should match the rewardsB balance in contract
         
-        // Verify accounting after donation
+        // Read onchain accounting state after donation (get-cleanup-rewards is read-only)
         getCleanupRewards(
             actualA,           // actual-a: same as before (no new WELSH)
             actualB,           // actual-b: updated with new STREET donation
@@ -460,7 +460,7 @@ describe("=== DECREASE REWARDS TESTS ===", () => {
             console.log(`  cleanup-a: ${onchainCleanupA}, cleanup-b: ${onchainCleanupB}`);
         }
         
-        // Verify getCleanupRewards with onchain values
+        // Read final onchain state (get-cleanup-rewards is read-only)
         getCleanupRewards(
             onchainActualA,
             onchainActualB,

@@ -35,7 +35,7 @@ export function emissionMint(
     if (disp) {
       let errorMsg = '';
       switch(errorCode) {
-        case 964:
+        case 984:
           errorMsg = 'ERR_NOT_AUTHORIZED';
           break;
         default:
@@ -92,7 +92,7 @@ export function streetMint(
     if (disp) {
       let errorMsg = '';
       switch(errorCode) {
-        case 964:
+        case 984:
           errorMsg = 'ERR_NOT_AUTHORIZED';
           break;
         default:
@@ -110,88 +110,6 @@ export function streetMint(
   
   if (disp && test.result.type === 'ok') {
     console.log(`✅ Street mint successful: ${amount} to ${recipient}`);
-  }
-  
-  return true;
-}
-
-export function getContractOwner(
-  disp: boolean = false
-) {
-  if (disp) {
-    console.log(`\n=== getContractOwner ===`);
-  }
-  
-  const test = simnet.callReadOnlyFn(
-    "street-token",
-    "get-contract-owner",
-    [],
-    simnet.deployer
-  );
-  
-  if (disp) {
-    console.log(`Result type: ${test.result.type}`);
-  }
-  
-  // Success case - expect (ok principal)
-  expect(test.result.type).toEqual('ok');
-  
-  const owner = (test.result as any).value.value;
-  
-  if (disp) {
-    console.log(`✅ Contract owner: ${owner}`);
-  }
-  
-  return owner;
-}
-
-export function setContractOwner(
-  newOwner: string,
-  caller: any,
-  disp: boolean = false
-) {
-  if (disp) {
-    console.log(`\n=== setContractOwner ===`);
-    console.log(`New owner: ${newOwner}`);
-    console.log(`Caller: ${caller}`);
-  }
-  
-  const test = simnet.callPublicFn(
-    "street-token",
-    "set-contract-owner",
-    [Cl.principal(newOwner)],
-    caller
-  );
-  
-  if (disp) {
-    console.log(`Result type: ${test.result.type}`);
-  }
-  
-  // Check for errors
-  if (test.result.type === 'err') {
-    const errorCode = Number((test.result as any).value.value);
-    
-    if (disp) {
-      let errorMsg = '';
-      switch(errorCode) {
-        case 962:
-          errorMsg = 'ERR_NOT_CONTRACT_OWNER';
-          break;
-        default:
-          errorMsg = `Unknown error: ${errorCode}`;
-      }
-      console.log(`☑️ Set contract owner failed: ${errorMsg}`);
-    }
-    
-    expect(test.result).toEqual(Cl.error(Cl.uint(errorCode)));
-    return false;
-  }
-  
-  // Success case - expect (ok true)
-  expect(test.result).toEqual(Cl.ok(Cl.bool(true)));
-  
-  if (disp && test.result.type === 'ok') {
-    console.log(`✅ Contract owner set to: ${newOwner}`);
   }
   
   return true;
@@ -226,7 +144,7 @@ export function setTokenUri(
     if (disp) {
       let errorMsg = '';
       switch(errorCode) {
-        case 962:
+        case 982:
           errorMsg = 'ERR_NOT_CONTRACT_OWNER';
           break;
         default:
@@ -290,10 +208,10 @@ export function transfer(
     if (disp) {
       let errorMsg = '';
       switch(errorCode) {
-        case 961:
+        case 981:
           errorMsg = 'ERR_ZERO_AMOUNT';
           break;
-        case 963:
+        case 983:
           errorMsg = 'ERR_NOT_TOKEN_OWNER';
           break;
         default:

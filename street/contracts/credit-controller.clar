@@ -16,20 +16,22 @@
     (memo (optional (buff 34)))
     )
   (let (
-    (sender-balance (unwrap! (contract-call? .credit-token get-balance sender) ERR_BALANCE))
-  )
+      (sender-balance (unwrap-panic (contract-call? .credit-token get-balance sender)))
+    )
     (begin
       (asserts! (> amount u0) ERR_ZERO_AMOUNT)
       (asserts! (is-eq contract-caller sender) ERR_NOT_TOKEN_OWNER)
       (asserts! (>= sender-balance amount) ERR_BALANCE)
       (try! (as-contract? ()
-        (try! (contract-call? .credit-token transfer amount sender recipient memo))))
+        (unwrap-panic (contract-call? .credit-token transfer amount sender recipient memo))))
       (try! (contract-call? .street-rewards decrease-rewards sender amount))
       (try! (contract-call? .street-rewards increase-rewards recipient amount))
-      (match memo content (print content) 0x)
-      (ok {
-        amount: amount
-      })
+      (begin
+        (match memo content (print content) 0x)
+        (ok {
+          amount: amount
+        })
+      )
     )
   )
 )

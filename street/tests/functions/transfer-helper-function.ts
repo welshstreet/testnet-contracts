@@ -1,17 +1,16 @@
 import { Cl } from "@stacks/transactions";
 import { expect } from "vitest";
 
-const accounts = simnet.getAccounts();
-const deployer = accounts.get("deployer")!;
-const wallet1 = accounts.get("wallet_1")!;
-
 export function transfer(
     amount: number,
     contract: string,
     sender: any,
     recipient: string | { address: string; contractName: string },
-    disp: boolean = false
+    disp: boolean = false,
+    txSender?: any
     ){
+    const actualTxSender = txSender || sender;
+    
     let principalArg;
     let displayName;
     if (typeof recipient === 'string') {
@@ -31,14 +30,14 @@ export function transfer(
             principalArg,
             Cl.none()
         ],
-        sender
+        actualTxSender
     );
 
     // Check zero amount (ERR_ZERO_AMOUNT - varies by contract)
     if (amount <= 0) {
         let expectedErrorCode = 600; // default for credit
         if (contract === 'street-token') {
-            expectedErrorCode = 900;
+            expectedErrorCode = 981;
         } else if (contract === 'welshcorgicoin') {
             expectedErrorCode = 2; // ERR-YOU-POOR
         }
@@ -51,10 +50,11 @@ export function transfer(
     }
 
     // Check token ownership (ERR_NOT_TOKEN_OWNER - varies by contract)
-    if (sender !== deployer && sender !== wallet1) {
+    // This triggers when tx-sender != sender (trying to transfer someone else's tokens)
+    if (actualTxSender !== sender) {
         let expectedErrorCode = 602; // default for credit (ERR_NOT_TOKEN_OWNER)
         if (contract === 'street-token') {
-            expectedErrorCode = 903; // ERR_NOT_TOKEN_OWNER
+            expectedErrorCode = 983; // ERR_NOT_TOKEN_OWNER
         } else if (contract === 'welshcorgicoin') {
             expectedErrorCode = 1; // ERR-UNAUTHORIZED
         }

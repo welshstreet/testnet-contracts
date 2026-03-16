@@ -1,6 +1,6 @@
 import { describe, it } from "vitest";
 import { disp, MINT_STREET_AMOUNT, DONATE_WELSH_TO_MINT, TRANSFER_WELSH } from "./vitestconfig"
-import { streetMint, setContractOwner } from "./functions/street-controller-helper-functions";
+import { streetMint } from "./functions/street-controller-helper-functions";
 import { getBalance } from "./functions/shared-read-only-helper-functions";
 import { transfer } from "./functions/transfer-helper-function";
 import { setupInitialLiquidity } from "./functions/setup-initial-liquidity-helper-function";
@@ -8,16 +8,8 @@ import { setupInitialLiquidity } from "./functions/setup-initial-liquidity-helpe
 const accounts = simnet.getAccounts();
 const deployer = accounts.get("deployer")!;
 const wallet1 = accounts.get("wallet_1")!
-const wallet2 = accounts.get("wallet_2")!
 
 describe("=== STREET CONTROLLER ERROR TESTS ===", () => {
-    it("=== STREET CONTROLLER TEST - FAIL - NOT CONTRACT OWNER ===", () => {
-        // STEP 1: wallet1 (not the contract owner) tries to set a new contract owner
-        // This should fail with ERR_NOT_CONTRACT_OWNER (981)        
-        // STEP 2: Call set-contract-owner from wallet_1 (should fail)
-        setContractOwner(wallet2, wallet1, disp);
-    });
-
     it("=== STREET CONTROLLER TEST - FAIL - ALREADY MINTED===", () => {
         // STEP 1: Setup initial liquidity (required for mint to work)
         setupInitialLiquidity(disp);

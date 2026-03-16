@@ -1,12 +1,10 @@
 ;; Welsh Street Controller
 
 ;; errors
-(define-constant ERR_NOT_CONTRACT_OWNER (err u981))
-(define-constant ERR_ALREADY_MINTED (err u982))
-(define-constant ERR_MINT_CAP (err u983))
-(define-constant ERR_NO_LIQUIDITY (err u984))
-(define-constant ERR_BALANCE (err u985))
-(define-constant ERR_SUPPLY (err u986))
+(define-constant ERR_ALREADY_MINTED (err u941))
+(define-constant ERR_NOT_CONTRACT_OWNER (err u942))
+(define-constant ERR_MINT_CAP (err u943))
+(define-constant ERR_NO_LIQUIDITY (err u944))
 (define-constant ERR_YOU_POOR (err u2))
 
 ;; constants
@@ -23,8 +21,8 @@
 
 (define-public (mint)
   (let (
-      (user-welsh (unwrap! (contract-call? .welshcorgicoin get-balance contract-caller) ERR_BALANCE))
-      (total-lp (unwrap! (contract-call? .credit-token get-total-supply) ERR_SUPPLY))
+  (user-welsh (unwrap-panic (contract-call? .welshcorgicoin get-balance contract-caller)))
+  (total-lp (unwrap-panic (contract-call? .credit-token get-total-supply)))
       (count (+ (var-get mint-count) u1))
       (is-milestone (is-eq (mod count u21) u0))
       (mint-amount (if is-milestone MINT_BONUS MINT_STREET))
@@ -52,7 +50,7 @@
 
 (define-public (set-contract-owner (new-owner principal))
   (begin
-    (asserts! (is-eq tx-sender (var-get contract-owner)) ERR_NOT_CONTRACT_OWNER)
+    (asserts! (is-eq contract-caller (var-get contract-owner)) ERR_NOT_CONTRACT_OWNER)
     (var-set contract-owner new-owner)
     (ok true)
   )

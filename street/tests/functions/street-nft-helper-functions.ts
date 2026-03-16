@@ -43,10 +43,10 @@ export function nftMint(
     if (disp) {
       let errorMsg = '';
       switch(errorCode) {
-        case 992:
+        case 962:
           errorMsg = 'ERR_NOT_AUTHORIZED';
           break;
-        case 995:
+        case 965:
           errorMsg = 'ERR_MINT_CAP';
           break;
         default:
@@ -114,13 +114,13 @@ export function nftTransfer(
     if (disp) {
       let errorMsg = '';
       switch(errorCode) {
-        case 992:
+        case 962:
           errorMsg = 'ERR_NOT_AUTHORIZED';
           break;
-        case 993:
+        case 963:
           errorMsg = 'ERR_NOT_FOUND';
           break;
-        case 994:
+        case 964:
           errorMsg = 'ERR_NOT_OWNER';
           break;
         default:
@@ -172,7 +172,7 @@ export function setNftContractOwner(
     if (disp) {
       let errorMsg = '';
       switch(errorCode) {
-        case 991:
+        case 961:
           errorMsg = 'ERR_NOT_CONTRACT_OWNER';
           break;
         default:
@@ -224,7 +224,7 @@ export function setNftBaseUri(
     if (disp) {
       let errorMsg = '';
       switch(errorCode) {
-        case 991:
+        case 961:
           errorMsg = 'ERR_NOT_CONTRACT_OWNER';
           break;
         default:

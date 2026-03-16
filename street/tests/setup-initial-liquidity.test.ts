@@ -4,11 +4,10 @@ import { setupInitialLiquidity } from "./functions/setup-initial-liquidity-helpe
 import { getMarketInfo } from "./functions/street-market-helper-functions";
 import { disp } from './vitestconfig';
 
-const accounts = simnet.getAccounts();
-const deployer = accounts.get("deployer")!;
-
 describe("=== SETUP INITIAL TESTS ===", () => {
     it("=== SETUP INITIAL LIQUIDITY PASS ===", () => {
+    const accounts = simnet.getAccounts();
+    const deployer = accounts.get("deployer")!;
         let { marketData, rewardData, supplyData, userData } = setupInitialLiquidity(disp);
         if (disp) {console.log("Initial Liquidity Setup:", { marketData, rewardData, supplyData, userData })};
 
